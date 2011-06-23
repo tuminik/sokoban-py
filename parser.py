@@ -1,14 +1,17 @@
 f = open('workfile', 'r')
+
 list = []
-listAux = []
-table = []
+
 for line in f:
     list.append(line)
+	
+table = []
 for i in list:
+
+	listAux = []
     for j in i:
         listAux.append(j)
+	
     table.append(listAux)
-    listAux = []
-print table
-table.seek('@')
+
 f.close()
