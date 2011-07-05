@@ -1385,6 +1385,7 @@ def textbox(msg=""
     for selectionEvent in ["Return","Button-1","Escape"]:
         commandButton.bind("<%s>" % selectionEvent, handler)
             
+    
 
     # ----------------- the action begins ----------------------------------------
     try:
@@ -1397,7 +1398,6 @@ def textbox(msg=""
                 msgbox("Exception when trying to convert "+ str(type(text)) + " to text in textArea")
                 sys.exit(16)
         textArea.insert(END,text, "normal")
-
     except:
         msgbox("Exception when trying to load the textArea.")
         sys.exit(16)
@@ -1407,7 +1407,7 @@ def textbox(msg=""
     except:
         msgbox("Exception when trying to put focus on okButton.")
         sys.exit(16)
-
+    textArea.configure(state=DISABLED) ##agregado por santiagodiazp
     boxRoot.mainloop()
     
     # this line MUST go before the line that destroys boxRoot
