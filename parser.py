@@ -4,14 +4,12 @@ list = []
 
 for line in f:
     list.append(line)
-	
+
 table = []
 for i in list:
-
-	listAux = []
+    listAux = []
     for j in i:
         listAux.append(j)
-	
     table.append(listAux)
-
+print table
 f.close()
