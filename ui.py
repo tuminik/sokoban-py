@@ -2,6 +2,9 @@ from easygui import ccbox
 from easygui import codebox
 import Tkinter as tkinter
 import tkMessageBox
+import sys
+MONOSPACE_FONT_SIZE     =  10
+tableCounter = 0
 
 table1 = [[' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '\n'], 
                 [' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', '\n'],
@@ -35,10 +38,9 @@ def tableToStr(tableS):
         tableR.append("".join(i))
     return tableR
 
-def table(box):
-    box(msg = "Tabla Prueba", title="Tabla", text=tableToStr(table2))
-    #ccbox(msg="Shall I continue?", title=" ", choices=("Continue", "Cancel"), image=None)
+def table():
     
+    return
     
 
 def callmove(i):
@@ -53,28 +55,25 @@ BOTTOM = "bottom"
 NO = False
 X = "x"
 root = tkinter.Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root_width    = int((screen_width * 0.8))
 btnframe = tkinter.Frame(root)
 btnframe.pack(side=TOP, expand=YES, fill=BOTH)
-newbtn = tkinter.Button(root, command=table, text="NEW GAME")
+newbtn = tkinter.Button(root, command=table, text="NEXT STEP")
 newbtn.pack(side=BOTTOM, expand=NO, fill=X)
-box = codebox(msg = "Tabla Prueba", title="Tabla", text=tableToStr(table1))
-box.confiure(state=NORMAL)
+character_width = int((root_width * 0.6) / MONOSPACE_FONT_SIZE)
+textArea = tkinter.Text(root,height=25,width=character_width, padx="1m", pady="1m")
+textArea.pack(side=tkinter.LEFT, fill=BOTH, expand=YES)
+text = tableToStr(table1)
+try:
+    text = "".join(text)  # convert a list or a tuple to a string
+except:
+    sys.exit(16)
+textArea.insert(tkinter.END,"SOKOBAN\n\n", "normal")    
+textArea.insert(tkinter.END,text, "normal")
+textArea.configure(state=tkinter.DISABLED)
 
-
-"""
-for i in tablePrueba:
-    buttons = [tkinter.Button(btnframe, text=i, width=40, height=3) for i in tablePrueba]
-for i, button in enumerate(buttons):
-    button["command"] = callmove(i)
-    button.grid(row=i//1, column=i%1, sticky="")
-
-
-if 1: # TODO: add switch for this
-    m = 0
-    buttons[m]["state"] = "disabled"
-    buttons[m]["text"] = "O"
-    board[m] = -1
-"""
 
 root.mainloop()
-print table
+
