@@ -40,6 +40,7 @@ def tableToStr(tableS):
 
 def table():
     
+    tableCounter=tableCounter+1
     return
     
 
