@@ -99,9 +99,5 @@ text = tableToStr(tables.tabs[0])
 tables.cont=+1
 printText(text,textArea)
 
-print tableCounter
-
-
-
 root.mainloop()
 
