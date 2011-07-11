@@ -10,7 +10,6 @@ functions."""
 from utils import *
 import agents
 import math, random, sys, time, bisect, string
-import parser
 #______________________________________________________________________________
 
 class Problem (object):
@@ -85,7 +84,7 @@ class Node:
         "Return a list of nodes reachable from this node. [Fig. 3.8]"
         return [Node(next, self, act,
                      problem.path_cost(self.path_cost, self.state, act, next))
-                for (act, next) in problem.successor(self.state)]
+                     for (act, next) in problem.successor(self.state)]
 
 #______________________________________________________________________________
 
@@ -454,11 +453,6 @@ class GraphProblem(Problem):
             return infinity
 
 #______________________________________________________________________________
-class sokobanProble(Problem):
-    def _init_(self):
-        self.initial=parser.parse()
-
-
 
 #______________________________________________________________________________
 
@@ -482,6 +476,9 @@ class NQueensProblem(Problem):
                 new[col] = row
                 return new
             col = state.index(None)
+            pepe = [(row, place(col, row)) for row in range(self.N)
+                    if not self.conflicted(state, row, col)]
+            print pepe
             return [(row, place(col, row)) for row in range(self.N)
                     if not self.conflicted(state, row, col)]
 
@@ -780,14 +777,7 @@ N  I  D
 >>> len(f) 
 206
 """
-
-__doc__ += random_tests("""
->>> ' '.join(f.words())
-'LID LARES DEAL LIE DIETS LIN LINT TIL TIN RATED ERAS LATEN DEAR TIE LINE INTER STEAL LATED LAST TAR SAL DITES RALES SAE RETS TAE RAT RAS SAT IDLE TILDES LEAST IDEAS LITE SATED TINED LEST LIT RASE RENTS TINEA EDIT EDITS NITES ALES LATE LETS RELIT TINES LEI LAT ELINT LATI SENT TARED DINE STAR SEAR NEST LITAS TIED SEAT SERAL RATE DINT DEL DEN SEAL TIER TIES NET SALINE DILATE EAST TIDES LINTER NEAR LITS ELINTS DENI RASED SERA TILE NEAT DERAT IDLEST NIDE LIEN STARED LIER LIES SETA NITS TINE DITAS ALINE SATIN TAS ASTER LEAS TSAR LAR NITE RALE LAS REAL NITER ATE RES RATEL IDEA RET IDEAL REI RATS STALE DENT RED IDES ALIEN SET TEL SER TEN TEA TED SALE TALE STILE ARES SEA TILDE SEN SEL ALINES SEI LASE DINES ILEA LINES ELD TIDE RENT DIEL STELA TAEL STALED EARL LEA TILES TILER LED ETA TALI ALE LASED TELA LET IDLER REIN ALIT ITS NIDES DIN DIE DENTS STIED LINER LASTED RATINE ERA IDLES DIT RENTAL DINER SENTI TINEAL DEIL TEAR LITER LINTS TEAL DIES EAR EAT ARLES SATE STARE DITS DELI DENTAL REST DITE DENTIL DINTS DITA DIET LENT NETS NIL NIT SETAL LATS TARE ARE SATI'
-
->>> boggle_hill_climbing(list('ABCDEFGHI'), verbose=False)
-(['E', 'P', 'R', 'D', 'O', 'A', 'G', 'S', 'T'], 123)
-
->>> random_weighted_selection(range(10), 3, lambda x: x * x)
-[8, 9, 6]
-""")
+#queens = NQueensProblem(8)
+#print iterative_deepening_search(queens)
+#graph = GraphProblem('A', 'B', romania)
+#print astar_search(graph).state

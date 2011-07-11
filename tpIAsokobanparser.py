@@ -27,19 +27,21 @@ def obtieneTamFilCol(linea): #obtiene las dimensiones del mapa
 	fila += 1 #obtiene la fila
 	
 def obtenerIndice(linea):
-	if linea.index('#') < linea.index('.') and linea.index('#') < linea.index('@') and linea.index('#') < linea.index('+') and linea.index('#') < linea.index('*') and linea.index('#') < linea.index('$'):
-		return linea.index('#')
-	elif linea.index('.') < linea.index('#') and linea.index('.') < linea.index('@') and linea.index('.') < linea.index('+') and linea.index('.') < linea.index('*') and linea.index('.') < linea.index('$'):
-		return linea.index('.')
-	elif linea.index('@') < linea.index('.') and linea.index('@') < linea.index('#') and linea.index('@') < linea.index('+') and linea.index('@') < linea.index('*') and linea.index('@') < linea.index('$'):
-		return linea.index('@')
-	elif linea.index('+') < linea.index('.') and linea.index('+') < linea.index('@') and linea.index('+') < linea.index('#') and linea.index('+') < linea.index('*') and linea.index('+') < linea.index('$'):
-		return linea.index('+')
-	elif linea.index('*') < linea.index('.') and linea.index('*') < linea.index('@') and linea.index('*') < linea.index('+') and linea.index('*') < linea.index('#') and linea.index('*') < linea.index('$'):
-		return linea.index('*')
-	elif linea.index('$') < linea.index('.') and linea.index('$') < linea.index('@') and linea.index('$') < linea.index('+') and linea.index('$') < linea.index('#') and linea.index('$') < linea.index('*'):
-		return linea.index('$')
-
+    try:
+        if linea.index('#') < linea.index('.') and linea.index('#') < linea.index('@') and linea.index('#') < linea.index('+') and linea.index('#') < linea.index('*') and linea.index('#') < linea.index('$'):
+            return linea.index('#')
+        elif linea.index('.') < linea.index('#') and linea.index('.') < linea.index('@') and linea.index('.') < linea.index('+') and linea.index('.') < linea.index('*') and linea.index('.') < linea.index('$'):
+            return linea.index('.')
+        elif linea.index('@') < linea.index('.') and linea.index('@') < linea.index('#') and linea.index('@') < linea.index('+') and linea.index('@') < linea.index('*') and linea.index('@') < linea.index('$'):
+            return linea.index('@')
+        elif linea.index('+') < linea.index('.') and linea.index('+') < linea.index('@') and linea.index('+') < linea.index('#') and linea.index('+') < linea.index('*') and linea.index('+') < linea.index('$'):
+            return linea.index('+')
+        elif linea.index('*') < linea.index('.') and linea.index('*') < linea.index('@') and linea.index('*') < linea.index('+') and linea.index('*') < linea.index('#') and linea.index('*') < linea.index('$'):
+            return linea.index('*')
+        elif linea.index('$') < linea.index('.') and linea.index('$') < linea.index('@') and linea.index('$') < linea.index('+') and linea.index('$') < linea.index('#') and linea.index('$') < linea.index('*'):
+            return linea.index('$')
+    except:
+        return False
 def rellenarEspaciosBlancos(linea):
 	linea2 = []
 	linea2 = list(linea)
@@ -49,11 +51,11 @@ def rellenarEspaciosBlancos(linea):
 	return linea2
 	
 def encuadrarLista(lista):
-	for i in range(len(lista)):
-		 for j in range(columna - len(lista[i])):
-			lista[i].append('#')
-	return lista
-	
+    for i in range(len(lista)):
+        for j in range(columna - len(lista[i])):
+            lista[i].append('#')
+    return lista
+    
 def verificaPriUltFila(lista):
 	for i in range(len(lista[0])):
 		if lista[0][i] != '#':
@@ -65,7 +67,7 @@ def verificaPriUltFila(lista):
 
 def obtenerMapa():
 	lista =[]
-	with open('workfile2', 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
+	with open('workfile', 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
 		for linea in f:
 			validaCaracteres(linea)
 			obtieneTamFilCol(linea)
