@@ -10,7 +10,7 @@ functions."""
 from utils import *
 import agents
 import math, random, sys, time, bisect, string
-
+import parser
 #______________________________________________________________________________
 
 class Problem (object):
@@ -452,6 +452,13 @@ class GraphProblem(Problem):
             return int(distance(locs[node.state], locs[self.goal]))
         else:
             return infinity
+
+#______________________________________________________________________________
+class sokobanProble(Problem):
+    def _init_(self):
+        self.initial=parser.parse()
+
+
 
 #______________________________________________________________________________
 
