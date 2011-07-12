@@ -10,16 +10,17 @@ def validaCaracteres(linea, fila, columna, caracteres): #verifica si los caracte
 			sys.exit("algun caracter no es aceptado")#al no ser validos detiene la ejecucion
 			
 def imprimir(lista):
-	for i in range(len(lista)):
-		#for j in range(len(lista[i])):
-			print lista[i]#[j]
-		
+    for i in range(len(lista)):
+        #for j in range(len(lista[i])):
+        print lista[i]#[j]
+    return
 def obtieneTamFilCol(linea, fila, columna, caracteres): #obtiene las dimensiones del mapa
-	if len(linea) > columna: #obtiene la columna
-		columna = len(linea)
-				
-	fila += 1 #obtiene la fila
-	
+    if len(linea) > columna: #obtiene la columna
+        columna = len(linea)
+    fila += 1 #obtiene la fila
+    return fila, columna
+
+    
 def obtenerIndice(linea, fila, columna, caracteres):
     try:
         if linea.index('#') < linea.index('.') and linea.index('#') < linea.index('@') and linea.index('#') < linea.index('+') and linea.index('#') < linea.index('*') and linea.index('#') < linea.index('$'):
@@ -68,14 +69,14 @@ def obtenerMapa(file):
     with open(file, 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
         for linea in f:
             validaCaracteres(linea, fila, columna, caracteres)
-            obtieneTamFilCol(linea, fila, columna, caracteres)
+            fila, columna=obtieneTamFilCol(linea, fila, columna, caracteres)
             lista.append(rellenarEspaciosBlancos(linea, fila, columna, caracteres)) #carga linea por linea el archivo a la lista
-            f.closed
+    f.closed
     return verificaPriUltFila(encuadrarLista(lista, fila, columna, caracteres), fila, columna, caracteres)
 #main
 #if __name__ == "__main__":
-#    a = obtenerMapa("workfile")
-#    print a
+#a = obtenerMapa("workfile")
+#print a
 #    #imprimir(obtenerMapa("workfile"))
 #    print fila, columna
 	
