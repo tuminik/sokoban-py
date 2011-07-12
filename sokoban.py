@@ -32,7 +32,7 @@ def canMove(x, y, state):
         
 def move(x, y, where, state):
     try :
-        state[x][y]=''
+        state[x][y]=' '
         if where==1:
             state[x+1][y]= '@'
             #return  "X+1", state
@@ -49,7 +49,7 @@ def move(x, y, where, state):
     except:
         return  state
 
-class sokobanProblem(Problem):
+class sokobanProblem(Problem):   #hereda la clase Problem de ai.py
     def _init_(self):
         self.initial=self
     def successor(self, state):
@@ -59,7 +59,7 @@ class sokobanProblem(Problem):
             return []
         else:
             state = move(x, y, canMoveWhere, state)
-            new =  state[:]
+            new =  copy.deepcopy(state)
             print "-----------"
             for i in new:
                 print "".join(i)
@@ -87,8 +87,8 @@ def findGoalState(table):
 
 
 goal = obtenerMapa("workfile")
-initial = copy.deepcopy(goal)
-goal = findGoalState(goal)
-sokoban = sokobanProblem(initial, goal)
+initial = copy.deepcopy(goal) #copia real
+goal = findGoalState(goal) #encontrar el estado final
+sokoban = sokobanProblem(initial, goal) 
 print [node.state for node in iterative_deepening_search(sokoban).path()]
 #iterative_deepening_search(sokoban)
