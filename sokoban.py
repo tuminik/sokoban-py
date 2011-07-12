@@ -2,6 +2,8 @@ from ai import Problem
 from ai import astar_search
 from ai import iterative_deepening_search
 from ai import depth_first_tree_search
+from tpIAsokobanparser import obtenerMapa
+import copy
 import parser
 
 def findPlayer(state):
@@ -54,7 +56,7 @@ class sokobanProblem(Problem):
         x, y = findPlayer(state)
         canMoveBool,  canMoveWhere = canMove(x, y, state)
         if not canMoveBool:
-            return [(0, state)]
+            return []
         else:
             state = move(x, y, canMoveWhere, state)
             new =  state[:]
@@ -84,8 +86,9 @@ def findGoalState(table):
     return table
 
 
-    
-goal = findGoalState(parser.parse())
-sokoban = sokobanProblem(parser.parse(), goal)
+goal = obtenerMapa("workfile")
+initial = copy.deepcopy(goal)
+goal = findGoalState(goal)
+sokoban = sokobanProblem(initial, goal)
 print [node.state for node in iterative_deepening_search(sokoban).path()]
 #iterative_deepening_search(sokoban)
