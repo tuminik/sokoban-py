@@ -40,65 +40,52 @@ def canMove(x, y, listMoves,  state):
         return listMoves
         
 def move(x, y,  listMoves, listStates,  state):
-    state[x][y]=' '
+    stateS = copy.deepcopy(state)
+    stateS[x][y]=' '
     try :
         for i in listMoves:
             if i==0:
-                state[x+1][y]= '@'
-                listStates.append(copy.deepcopy(state))     #copia la tabla y la agrega a la lista de posible movidas
-                state[x+1][y]= ' '                                      #"cerar" la tabla
+                stateS[x+1][y]= '@'
+                listStates.append(copy.deepcopy(stateS))     #copia la tabla y la agrega a la lista de posible movidas
+                stateS[x+1][y]= ' '                                      #"cerar" la tabla
             if i==1:
-                state[x-1][y]= '@'
-                listStates.append(copy.deepcopy(state))
-                state[x-1][y]= ' '
+                stateS[x-1][y]= '@'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x-1][y]= ' '
             if i==2:
-                state[x][y+1]= '@'
-                listStates.append(copy.deepcopy(state))
-                state[x][y+1]= ' '
+                stateS[x][y+1]= '@'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x][y+1]= ' '
             if i==3:
-                state[x][y-1]= '@'
-                listStates.append(copy.deepcopy(state))
-                state[x][y-1]= ' '
+                stateS[x][y-1]= '@'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x][y-1]= ' '
             if i==4:
-                state[x+1][y]= '@'
-                state[x+2][y]='$'
-                listStates.append(copy.deepcopy(state))
-                state[x+1][y]= ' '
-                state[x+2][y]=' '
+                stateS[x+1][y]= '@'
+                stateS[x+2][y]='$'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x+1][y]= ' '
+                stateS[x+2][y]=' '
             if i==5:
-                state[x-1][y]= '@'
-                state[x-2][y]='$'
-                listStates.append(copy.deepcopy(state))
-                state[x-1][y]= ' '
-                state[x-2][y]= ' '
+                stateS[x-1][y]= '@'
+                stateS[x-2][y]='$'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x-1][y]= ' '
+                stateS[x-2][y]= ' '
             if i==6:
-                state[x][y+1]= '@'
-                state[x][y+2]='$'
-                listStates.append(copy.deepcopy(state))
-                state[x][y+1]= ' '
-                state[x][y+2]= ' '
+                stateS[x][y+1]= '@'
+                stateS[x][y+2]='$'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x][y+1]= ' '
+                stateS[x][y+2]= ' '
             if i==7:
-                state[x][y-1]= '@'
-                state[x][y-2]='$'
-                listStates.append(copy.deepcopy(state))
-                state[x][y-1]= ' '
-                state[x][y-2]= ' '
-#        if where==1:
-#            state[x+1][y]= '@'
-#            #return  "X+1", state
-#        if where==2:
-#            state[x-1][y]='@'
-#            #return "X-1", state
-#        if where==3:
-#            state[x][y+1]='@'
-#            #return "Y+1", state
-#        if where==4:
-#            state[x][y-1]='@'
-#            #return "Y-1", state
-        state[x][y]='@'
+                stateS[x][y-1]= '@'
+                stateS[x][y-2]='$'
+                listStates.append(copy.deepcopy(stateS))
+                stateS[x][y-1]= ' '
+                stateS[x][y-2]= ' '
         return listStates
     except:
-        state[x][y]='@'
         return  listStates
 
 class sokobanProblem(Problem):   #hereda la clase Problem de ai.py
@@ -123,7 +110,7 @@ class sokobanProblem(Problem):   #hereda la clase Problem de ai.py
 #                for j in i:
 #                    print "".join(j)
 #            print "-----------finhijos"
-#            raw_input()
+            raw_input()
             return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves]
     def h(self):
         return 1
@@ -163,5 +150,5 @@ goal = obtenerMapa("workfile")
 initial = copy.deepcopy(goal) #copia real
 goal = findGoalState(goal) #encontrar el estado final
 sokoban = sokobanProblem(initial, goal) 
-print  iterative_deepening_search(sokoban).path()
+print  depth_first_tree_search(sokoban).path()
 #iterative_deepening_search(sokoban)
