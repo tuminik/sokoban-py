@@ -4,7 +4,6 @@ from ai import iterative_deepening_search
 from ai import depth_first_tree_search
 from tpIAsokobanparser import obtenerMapa
 import copy
-import parser
 
 def findPlayer(state):
     x=0
@@ -87,31 +86,32 @@ def move(x, y,  listMoves, listStates,  state):
         return listStates
     except:
         return  listStates
-
-class sokobanProblem(Problem):   #hereda la clase Problem de ai.py
-    def _init_(self):
-        self.initial=self
-    def successor(self, state):
-        listMoves=[]
-        listStates=[]
-        x, y = findPlayer(state)
-        canMove(x, y,listMoves,  state)
-        if not listMoves:
-            return []
-        else:
-            move(x, y, listMoves ,  listStates, state)
-            new =  copy.deepcopy(state)
-            print "-----------padre"
+#funcion constructor
+class sokobanProblem(Problem):      #hereda la clase Problem de ai.py
+    def _init_(self):                                #constructor
+        self.initial=self                               #recibe la tabla de juego y construye
+    def successor(self, state):                 #funcion sucesora
+        listMoves=[]                                #lista para posibles movimientos
+        listStates=[]                               #lista para posibles estados de la tabla
+        x, y = findPlayer(state)                #encontrar donde esta el jugador
+        canMove(x, y,listMoves,  state)     #puede moverse????  
+        if not listMoves:                             #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
+            return []                                     #retorna lista vacia la funcion sucesor
+        else:                                                 #si la lista tiene algo!!
+            move(x, y, listMoves ,  listStates, state)      #con listMoves hago los posibles movimientos en listStates
+            new =  copy.deepcopy(state)                     #debug
+            print "-----------padre"                            
             for i in new:
                 print "".join(i)
-            print "-----------finpadre"
+            print "-----------finpadre"                     #debug
 #            print "-----------hijos"
 #            for i in listStates:
 #                for j in i:
 #                    print "".join(j)
 #            print "-----------finhijos"
-            raw_input()
-            return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves]
+            raw_input()                                                   #debug      
+            return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
+            #en este caso un par de movimiento y la tabla que se movio
     def h(self):
         return 1
 
@@ -150,5 +150,5 @@ goal = obtenerMapa("workfile")
 initial = copy.deepcopy(goal) #copia real
 goal = findGoalState(goal) #encontrar el estado final
 sokoban = sokobanProblem(initial, goal) 
-print  depth_first_tree_search(sokoban).path()
-#iterative_deepening_search(sokoban)
+#depth_first_tree_search(sokoban).path()
+iterative_deepening_search(sokoban)
