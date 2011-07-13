@@ -15,56 +15,126 @@ def findPlayer(state):
                 return x, y
             y+=1
         x+=1
+    return False, False
 
-def canMove(x, y, state):
+def canMove(x, y, listMoves,  state):
     try :
         if state[x+1][y]==' ':
-            return True, 1
+            listMoves.append(0)
         if state[x-1][y]==' ':
-            return True, 2
+            listMoves.append(1)
         if state[x][y+1]==' ':
-            return True, 3
+            listMoves.append(2)
         if state[x][y-1]==' ':
-            return True, 4
-        return False, 0
+            listMoves.append(3)
+        if state[x+1][y]=='$' and state[x+2][y]==' ' :
+            listMoves.append(4)  
+        if state[x-1][y]=='$'and state[x-2][y]==' ' :
+            listMoves.append(5)
+        if state[x][y+1]=='$'and state[x][y+2]==' ' :
+            listMoves.append(6)
+        if state[x][y-1]=='$'and state[x][y-2]==' ' :
+            listMoves.append(7)
+        return listMoves
     except:
-        return False, 0
+        return listMoves
         
-def move(x, y, where, state):
+def move(x, y,  listMoves, listStates,  state):
+    state[x][y]=' '
     try :
-        state[x][y]=' '
-        if where==1:
-            state[x+1][y]= '@'
-            #return  "X+1", state
-        if where==2:
-            state[x-1][y]='@'
-            #return "X-1", state
-        if where==3:
-            state[x][y+1]='@'
-            #return "Y+1", state
-        if where==4:
-            state[x][y-1]='@'
-            #return "Y-1", state
-        return state
+        for i in listMoves:
+            if i==0:
+                state[x+1][y]= '@'
+                listStates.append(copy.deepcopy(state))     #copia la tabla y la agrega a la lista de posible movidas
+                state[x+1][y]= ' '                                      #"cerar" la tabla
+            if i==1:
+                state[x-1][y]= '@'
+                listStates.append(copy.deepcopy(state))
+                state[x-1][y]= ' '
+            if i==2:
+                state[x][y+1]= '@'
+                listStates.append(copy.deepcopy(state))
+                state[x][y+1]= ' '
+            if i==3:
+                state[x][y-1]= '@'
+                listStates.append(copy.deepcopy(state))
+                state[x][y-1]= ' '
+            if i==4:
+                state[x+1][y]= '@'
+                state[x+2][y]='$'
+                listStates.append(copy.deepcopy(state))
+                state[x+1][y]= ' '
+                state[x+2][y]=' '
+            if i==5:
+                state[x-1][y]= '@'
+                state[x-2][y]='$'
+                listStates.append(copy.deepcopy(state))
+                state[x-1][y]= ' '
+                state[x-2][y]= ' '
+            if i==6:
+                state[x][y+1]= '@'
+                state[x][y+2]='$'
+                listStates.append(copy.deepcopy(state))
+                state[x][y+1]= ' '
+                state[x][y+2]= ' '
+            if i==7:
+                state[x][y-1]= '@'
+                state[x][y-2]='$'
+                listStates.append(copy.deepcopy(state))
+                state[x][y-1]= ' '
+                state[x][y-2]= ' '
+#        if where==1:
+#            state[x+1][y]= '@'
+#            #return  "X+1", state
+#        if where==2:
+#            state[x-1][y]='@'
+#            #return "X-1", state
+#        if where==3:
+#            state[x][y+1]='@'
+#            #return "Y+1", state
+#        if where==4:
+#            state[x][y-1]='@'
+#            #return "Y-1", state
+        state[x][y]='@'
+        return listStates
     except:
-        return  state
+        state[x][y]='@'
+        return  listStates
 
 class sokobanProblem(Problem):   #hereda la clase Problem de ai.py
     def _init_(self):
         self.initial=self
     def successor(self, state):
+        listMoves=[]
+        listStates=[]
         x, y = findPlayer(state)
-        canMoveBool,  canMoveWhere = canMove(x, y, state)
-        if not canMoveBool:
+        canMove(x, y,listMoves,  state)
+        if not listMoves:
             return []
         else:
-            state = move(x, y, canMoveWhere, state)
+            move(x, y, listMoves ,  listStates, state)
             new =  copy.deepcopy(state)
-            print "-----------"
+            print "-----------padre"
             for i in new:
                 print "".join(i)
-            print "-----------"
-            return [(canMoveWhere, new)]
+            print "-----------finpadre"
+#            print "-----------hijos"
+#            for i in listStates:
+#                for j in i:
+#                    print "".join(j)
+#            print "-----------finhijos"
+#            raw_input()
+            return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves]
+    def h(self):
+        return 1
+
+
+def wichMove(moveA, listStates, listMoves):
+    try:
+        return listStates[listMoves.index(moveA)]
+    except:
+        return []
+        
 
 def findGoalState(table):
     x=0
@@ -85,10 +155,13 @@ def findGoalState(table):
         x+=1
     return table
 
+def distPlayerToBox(state):
+    return
+    
 
 goal = obtenerMapa("workfile")
 initial = copy.deepcopy(goal) #copia real
 goal = findGoalState(goal) #encontrar el estado final
 sokoban = sokobanProblem(initial, goal) 
-print [node.state for node in iterative_deepening_search(sokoban).path()]
+print  iterative_deepening_search(sokoban).path()
 #iterative_deepening_search(sokoban)
