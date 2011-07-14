@@ -6,8 +6,11 @@ from ai import depth_first_graph_search
 from ai import breadth_first_tree_search
 from ai import breadth_first_graph_search
 from ai import depth_limited_search
+from utils import infinity
+import sys
 from tpIAsokobanparser import obtenerMapa
 import copy
+printTableFather=False
 
 def findPlayer(state):
     x=0
@@ -37,6 +40,14 @@ def canMove(x, y, listMoves,  state):
         if state[x][y+1]=='$'and state[x][y+2]==' ' :
             listMoves.append(6)
         if state[x][y-1]=='$'and state[x][y-2]==' ' :
+            listMoves.append(7)
+        if state[x+1][y]=='$' and state[x+2][y]=='.' :
+            listMoves.append(4)  
+        if state[x-1][y]=='$'and state[x-2][y]=='.' :
+            listMoves.append(5)
+        if state[x][y+1]=='$'and state[x][y+2]=='.' :
+            listMoves.append(6)
+        if state[x][y-1]=='$'and state[x][y-2]=='.' :
             listMoves.append(7)
         return listMoves
     except:
@@ -97,52 +108,57 @@ def move(x, y,  listMoves, listStates,  state):
 class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
     def _init_(self):
         self.initial=self                            #recibe la tabla de juego y construye
-    def successor(self, state):                         #funcion sucesora
-        listMoves=[]                                             #lista para posibles movimientos
-        listStates=[]                                           #lista para posibles estados de la tabla
-        x, y = findPlayer(state.table)                            #encontrar donde esta el jugador
-        canMove(x, y,listMoves,  state.table)                 #puede moverse????  
-        if not listMoves:                                           #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
-            return []                                                   #retorna lista vacia la funcion sucesor
-        else:                                                               #si la lista tiene algo!!
-            move(x, y, listMoves ,  listStates, state.table)      #con listMoves hago los posibles movimientos en listStates
-            new =  copy.deepcopy(state.table)                     #debug
-            print "-----------padre"                            
-            for i in new:
-                print "".join(i)
-            print "-----------finpadre"                     #debug
-#            print "-----------hijos"
-#            for i in listStates:
-#                for j in i.table:
-#                    print "".join(j)
-#            print "-----------finhijos"
-            raw_input()                                                   #debug      
+    def goal_test(self, state):
+        listPlaces=[]
+        listBoxes=[]
+        listPlaces = findPlaces(listPlaces, self.initial.table)
+        listBoxes = findBoxes(listBoxes, state.table)
+        for i in listBoxes:
+                xB, yB = i
+                for j in listPlaces:
+                    xP, yP = j
+                    if xB!=xP or yB!=yP:
+                        return False
+        return True
+        
+    def successor(self, state):                             #funcion sucesora
+        listMoves=[]                                                #lista para posibles movimientos
+        listStates=[]                                                #lista para posibles estados de la tabla
+        x, y = findPlayer(state.table)                                  #encontrar donde esta el jugador
+        canMove(x, y,listMoves,  state.table)                      #puede moverse????  
+        if not listMoves:                                                     #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
+            return []                                                           #retorna lista vacia la funcion sucesor
+        else:                                                                      #si la lista tiene algo!!
+            move(x, y, listMoves ,  listStates, state.table)     #con listMoves hago los posibles movimientos en listStates
+            if printTableFather:
+                printTable(state.table, "padre")
+                raw_input()
             return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
-            #en este caso un par de movimiento y la tabla que se movio
+                                                                                                                                          #en este caso un par de movimiento y la tabla que se movio
     
     def h(self, node):
         c=0
         listBoxes=[]
         listPlaces=[]
-        x, y = findPlayer(node.state.table)
-        listBoxes = findBoxes(listBoxes, node.state.table)
-        listPlaces = findPlaces(listPlaces, node.state.table)
-        for i in listBoxes:
-            xB, yB = i
-            c+=distancePlayerToBox(x, y, xB, yB)
-            for j in listPlaces:
-                xP, yP = j
-                c+=distancePlacesToBoxes(xP, yP, xB, yB)
-#            if i[0]+1 == pos[0]:
-#                c=+1
-#            if i[0]-1 == pos[0]:
-#                c=+1
-#            if i[1]+1 == pos[1]:
-#                c=+1
-#            if i[1]-1 == pos[1]:
-#                c=+1
-        
+        if node.state:
+            x, y = findPlayer(node.state.table)
+            listBoxes = findBoxes(listBoxes, node.state.table)
+            listPlaces = findPlaces(listPlaces, node.state.table)
+            for i in listBoxes:
+                xB, yB = i
+                c+=distancePlayerToBox(x, y, xB, yB)
+                for j in listPlaces:
+                    xP, yP = j
+                    c+=distancePlacesToBoxes(xP, yP, xB, yB)
+        if findBlockedBoxes(listBoxes, node.state.table):
+            return infinity
         return c
+
+def wichMove(moveA, listStates, listMoves):
+    try:
+        return listStates[listMoves.index(moveA)]
+    except:
+        return []
 
 def findBoxes(listBoxes, state):
     x=0
@@ -166,12 +182,20 @@ def findPlaces(listPlaces, state):
         x+=1
     return listPlaces
 
+def findBlockedBoxes(listBoxes, table):
+    for i in listBoxes:
+        x, y=i
+        if table[x+1][y]=='#' and table[x][y+1]=='#':
+            return True
+        if table[x+1][y]=='#' and table[x][y-1]=='#':
+            return True
+        if table[x-1][y]=='#' and table[x][y-1]=='#':
+            return True
+        if table[x-1][y]=='#' and table[x][y+1]=='#':
+            return True
+    return False
+        
 
-def wichMove(moveA, listStates, listMoves):
-    try:
-        return listStates[listMoves.index(moveA)]
-    except:
-        return []
 
 
 def findGoalState(table):
@@ -200,15 +224,49 @@ def distancePlayerToBox(xPlayer, yPlayer, xBox, yBox):
 def distancePlacesToBoxes(xPlace, yPlace, xBox, yBox):
     return abs(xPlace-xBox)+abs(yPlace-yBox)+5
     
-class Table():
-    table=[]
+class Table():  #nuevo tipo de dato Table que formado por una lista
+    table=[]        #no funciona la hastable si es solo con una tabla da un error de "unhashable type: list"
+                        #entonces es necesario meter una lista dentro de una clase, se entiende que asi es mas formal y lleva un unico puntero
+    
+def printTable(tab, label):
+    print "-----------", label                            
+    for i in tab:
+        print "".join(i)
+    print "-----------", label
+    
 
-goal = Table()
-goal.table = obtenerMapa("workfile")
-initial = copy.deepcopy(goal) #copia real
-goal = findGoalState(goal.table) #encontrar el estado final
-sokoban = SokobanProblem(initial, goal) 
-print astar_search(sokoban).path
+
+if len(sys.argv)==2 or len(sys.argv)==3:
+    goal = Table()                                              #llamada al constuctor de Table
+    if sys.argv[1]=="-v":
+        printTableFather=True
+        try:
+            goal.table = obtenerMapa(sys.argv[2])
+        except:
+            print "El nombre del archivo es incorrecto"
+            exit(0)
+
+    else:
+        try:
+            goal.table = obtenerMapa(sys.argv[1])
+        except:
+            print "El nombre del archivo es incorrecto"
+            exit(0)
+    initial = copy.deepcopy(goal) #copia real
+    goal.table = findGoalState(goal.table) #encontrar el estado final
+    sokoban = SokobanProblem(initial, goal) 
+    #print astar_search(sokoban).path
+    path = [node.state for node in astar_search(sokoban).path()] 
+    for i in path:
+        printTable(i.table, "")
+        print
+
+else:
+    if len(sys.argv)<2:
+        print "Debe recibir el nombre del archivo..."
+    if len(sys.argv)>3:
+        print "Demasiados arguementos"
+    
 #depth_first_graph_search(sokoban)
 #depth_limited_search(sokoban)
 #iterative_deepening_search(sokoban)
