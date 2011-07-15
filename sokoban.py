@@ -109,10 +109,16 @@ def move(x, y,  listMoves, listStates,  state):
         return  listStates
 #funcion constructor
 
+###############################################################################
+#                                 Sokoban Problem                             #
+###############################################################################
 
 class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
+    
+    #recibe la tabla de juego y construye
     def _init_(self):
-        self.initial=self                            #recibe la tabla de juego y construye
+        self.initial=self
+    
     def goal_test(self, state):
         listPlaces=[]
         listBoxes=[]
@@ -125,21 +131,21 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
                     if xB!=xP or yB!=yP:
                         return False
         return True
-        
-    def successor(self, state):                             #funcion sucesora
-        listMoves=[]                                                #lista para posibles movimientos
-        listStates=[]                                                #lista para posibles estados de la tabla
-        x, y = findPlayer(state.table)                                  #encontrar donde esta el jugador
-        canMove(x, y,listMoves,  state.table)                      #puede moverse????  
-        if not listMoves:                                                     #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
-            return []                                                           #retorna lista vacia la funcion sucesor
-        else:                                                                      #si la lista tiene algo!!
-            move(x, y, listMoves ,  listStates, state.table)     #con listMoves hago los posibles movimientos en listStates
+    
+    def successor(self, state):                              #funcion sucesora
+        listMoves=[]                                         #lista para posibles movimientos
+        listStates=[]                                        #lista para posibles estados de la tabla
+        x, y = findPlayer(state.table)                       #encontrar donde esta el jugador
+        canMove(x, y,listMoves,  state.table)                #puede moverse????  
+        if not listMoves:                                    #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
+            return []                                        #retorna lista vacia la funcion sucesor
+        else:                                                #si la lista tiene algo!!
+            move(x, y, listMoves ,  listStates, state.table) #con listMoves hago los posibles movimientos en listStates
             if printTableFather:
                 printTable(state.table, "padre")
                 raw_input()
             return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
-                                                                                                                                          #en este caso un par de movimiento y la tabla que se movio
+            #en este caso un par de movimiento y la tabla que se movio
     
     def h(self, node):
         c=0
