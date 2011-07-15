@@ -4,11 +4,11 @@ import sys
 
 
 def validaCaracteres(linea, fila, columna, caracteres): #verifica si los caracteres extraidos del archivo son validos
-	for i in range(len(linea)):
-		if linea[i] not in caracteres:
-			print linea[i], i #imprime el caracter invalido y la posicion
-			sys.exit("algun caracter no es aceptado")#al no ser validos detiene la ejecucion
-			
+    for i in range(len(linea)):
+        if linea[i] not in caracteres:
+            print linea[i], i #imprime el caracter invalido y la posicion
+            sys.exit("algun caracter no es aceptado")#al no ser validos detiene la ejecucion
+            
 def imprimir(lista):
     for i in range(len(lista)):
         #for j in range(len(lista[i])):
@@ -39,13 +39,13 @@ def obtenerIndice(linea, fila, columna, caracteres):
         return False
 
 def rellenarEspaciosBlancos(linea, fila, columna, caracteres):
-	linea2 = []
-	linea2 = list(linea)
-	linea2[len(linea2) - 1] = '#'
-	for i in range(obtenerIndice(linea, fila, columna, caracteres)):#(linea.index('#'))
-		linea2[i] = '#'
-	return linea2
-	
+    linea2 = []
+    linea2 = list(linea)
+    linea2[len(linea2) - 1] = '#'
+    for i in range(obtenerIndice(linea, fila, columna, caracteres)):#(linea.index('#'))
+        linea2[i] = '#'
+    return linea2
+    
 def encuadrarLista(lista, fila, columna, caracteres):
     for i in range(len(lista)):
         for j in range(columna - len(lista[i])):
@@ -53,13 +53,13 @@ def encuadrarLista(lista, fila, columna, caracteres):
     return lista
     
 def verificaPriUltFila(lista, fila, columna, caracteres):
-	for i in range(len(lista[0])):
-		if lista[0][i] != '#':
-			lista[0][i] = '#'
-	for i in range(len(lista[fila-1])):
-		if lista[fila - 1][i] != '#':
-			lista[fila - 1][i] = '#'
-	return lista
+    for i in range(len(lista[0])):
+        if lista[0][i] != '#':
+            lista[0][i] = '#'
+    for i in range(len(lista[fila-1])):
+        if lista[fila - 1][i] != '#':
+            lista[fila - 1][i] = '#'
+    return lista
 
 def obtenerMapa(file):
     lista =[]
@@ -79,4 +79,4 @@ def obtenerMapa(file):
 #print a
 #    #imprimir(obtenerMapa("workfile"))
 #    print fila, columna
-	
+    
