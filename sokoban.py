@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ai import Problem
 from ai import astar_search
 from ai import iterative_deepening_search
@@ -12,12 +14,15 @@ from tpIAsokobanparser import obtenerMapa
 import copy
 printTableFather=False
 
+import constantes
+
+# Busca el jugador dentro del laberinto
 def findPlayer(state):
     x=0
     for i in state:
         y=0
         for j in i:
-            if j=='@':
+            if j == CHAR_PLAYER or j == CHAR_PLAYER_S:
                 return x, y
             y+=1
         x+=1
