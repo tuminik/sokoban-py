@@ -13,8 +13,10 @@ import sys
 from tpIAsokobanparser import obtenerMapa
 import copy
 printTableFather=False
+import time
 
-import constantes
+from constantes import CHAR_PLAYER, CHAR_PLAYER_S
+
 
 # Busca el jugador dentro del laberinto
 def findPlayer(state):
@@ -47,13 +49,13 @@ def canMove(x, y, listMoves,  state):
         if state[x][y-1]=='$'and state[x][y-2]==' ' :
             listMoves.append(7)
         if state[x+1][y]=='$' and state[x+2][y]=='.' :
-            listMoves.append(4)  
+            listMoves.append(8)  
         if state[x-1][y]=='$'and state[x-2][y]=='.' :
-            listMoves.append(5)
+            listMoves.append(9)
         if state[x][y+1]=='$'and state[x][y+2]=='.' :
-            listMoves.append(6)
+            listMoves.append(10)
         if state[x][y-1]=='$'and state[x][y-2]=='.' :
-            listMoves.append(7)
+            listMoves.append(11)
         return listMoves
     except:
         return listMoves
@@ -104,6 +106,30 @@ def move(x, y,  listMoves, listStates,  state):
                 listStates.append(copy.deepcopy(tableS))
                 tableS.table[x][y-1]= ' '
                 tableS.table[x][y-2]= ' '
+            if i==8:
+                tableS.table[x+1][y]= '@'
+                tableS.table[x+2][y]='*'
+                listStates.append(copy.deepcopy(tableS))
+                tableS.table[x+1][y]= '.'
+                tableS.table[x+2][y]= ' '
+            if i==9:
+                tableS.table[x-1][y]= '@'
+                tableS.table[x-2][y]='*'
+                listStates.append(copy.deepcopy(tableS))
+                tableS.table[x-1][y]= '.'
+                tableS.table[x-2][y]= ' '
+            if i==10:
+                tableS.table[x][y+1]= '@'
+                tableS.table[x][y+2]='*'
+                listStates.append(copy.deepcopy(tableS))
+                tableS.table[x][y+1]= '.'
+                tableS.table[x][y+2]= ' '
+            if i==11:
+                tableS.table[x][y-1]= '@'
+                tableS.table[x][y-2]='*'
+                listStates.append(copy.deepcopy(tableS))
+                tableS.table[x][y-1]= '.'
+                tableS.table[x][y-2]= ' '
         return listStates
     except:
         return  listStates
@@ -123,7 +149,9 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
         listPlaces=[]
         listBoxes=[]
         listPlaces = findPlaces(listPlaces, self.initial.table)
-        listBoxes = findBoxes(listBoxes, state.table)
+        listBoxes = findBoxesPlaced(listBoxes, state.table)
+        if not listBoxes:
+            return False
         for i in listBoxes:
                 xB, yB = i
                 for j in listPlaces:
@@ -192,6 +220,17 @@ def findPlaces(listPlaces, state):
             y+=1
         x+=1
     return listPlaces
+    
+def findBoxesPlaced(listBoxes, state):
+    x=0
+    for i in state:
+        y=0
+        for j in i:
+            if j=='*':
+                listBoxes.append((x, y))
+            y+=1
+        x+=1
+    return listBoxes
 
 def findBlockedBoxes(listBoxes, table):
     for i in listBoxes:
@@ -266,17 +305,28 @@ if len(sys.argv)==2 or len(sys.argv)==3:
     initial = copy.deepcopy(goal) #copia real
     goal.table = findGoalState(goal.table) #encontrar el estado final
     sokoban = SokobanProblem(initial, goal) 
-    #print astar_search(sokoban).path
-    path = [node.state for node in astar_search(sokoban).path()] 
+    
+    x1= time.strftime('%s')
+    
+    pathS = astar_search(sokoban).path()
+    
+    x2= time.strftime('%s')
+    timediff = int(x2)-int(x1)
+    
+    
+    path = [node.state for node in pathS] 
     for i in path:
         printTable(i.table, "")
         print
-
+        
+    print 'Tiempo:', timediff,'segundos'
+    
 else:
     if len(sys.argv)<2:
         print "Debe recibir el nombre del archivo..."
     if len(sys.argv)>3:
-        print "Demasiados arguementos"
+        print "Demasiados arguementos..."
+
     
 #depth_first_graph_search(sokoban)
 #depth_limited_search(sokoban)

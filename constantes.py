@@ -42,16 +42,16 @@ CHAR_BOX_S='*'
 ###############################################################################
 
 # Obtiene la direccion del mivimiento
-def getMoveDirection(move)
+def getMoveDirection(move):
     direction = move & MASK_DIRECTION
     return direction
 
 # Determina si se esta moviendo una caja
-def isPushingBox(move)
+def isPushingBox(move):
     r = move & 4
     return r
 
-def getGoalSpots(move)
+def getGoalSpots(move):
     r = move & 56
     return r
 
