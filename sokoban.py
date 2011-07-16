@@ -285,49 +285,51 @@ def printTable(tab, label):
     print "-----------", label
     
 
+def main():
+    if len(sys.argv)==2 or len(sys.argv)==3:
+        goal = Table()                                              #llamada al constuctor de Table
+        if sys.argv[1]=="-v":
+            printTableFather=True
+            try:
+                goal.table = obtenerMapa(sys.argv[2])
+            except:
+                print "El nombre del archivo es incorrecto"
+                exit(0)
 
-if len(sys.argv)==2 or len(sys.argv)==3:
-    goal = Table()                                              #llamada al constuctor de Table
-    if sys.argv[1]=="-v":
-        printTableFather=True
-        try:
-            goal.table = obtenerMapa(sys.argv[2])
-        except:
-            print "El nombre del archivo es incorrecto"
-            exit(0)
-
-    else:
-        try:
-            goal.table = obtenerMapa(sys.argv[1])
-        except:
-            print "El nombre del archivo es incorrecto"
-            exit(0)
-    initial = copy.deepcopy(goal) #copia real
-    goal.table = findGoalState(goal.table) #encontrar el estado final
-    sokoban = SokobanProblem(initial, goal) 
-    
-    x1= time.strftime('%s')
-    
-    pathS = astar_search(sokoban).path()
-    
-    x2= time.strftime('%s')
-    timediff = int(x2)-int(x1)
-    
-    
-    path = [node.state for node in pathS] 
-    for i in path:
-        printTable(i.table, "")
-        print
+        else:
+            try:
+                goal.table = obtenerMapa(sys.argv[1])
+            except:
+                print "El nombre del archivo es incorrecto"
+                exit(0)
+        initial = copy.deepcopy(goal) #copia real
+        goal.table = findGoalState(goal.table) #encontrar el estado final
+        sokoban = SokobanProblem(initial, goal) 
         
-    print 'Tiempo:', timediff,'segundos'
-    
-else:
-    if len(sys.argv)<2:
-        print "Debe recibir el nombre del archivo..."
-    if len(sys.argv)>3:
-        print "Demasiados arguementos..."
+        x1= time.strftime('%S')
+        
+        pathS = astar_search(sokoban).path()
+        
+        x2= time.strftime('%S')
+        timediff = int(x2)-int(x1)
+        
+        
+        path = [node.state for node in pathS] 
+        for i in path:
+            printTable(i.table, "")
+            print
+            
+        print 'Tiempo:', timediff,'segundos'
+        
+    else:
+        if len(sys.argv)<2:
+            print "Debe recibir el nombre del archivo..."
+        if len(sys.argv)>3:
+            print "Demasiados arguementos..."
 
-    
+if __name__ == "__main__":
+    main()
+
 #depth_first_graph_search(sokoban)
 #depth_limited_search(sokoban)
 #iterative_deepening_search(sokoban)

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
+
 import sys
-
-
 
 def validaCaracteres(linea, fila, columna, caracteres): #verifica si los caracteres extraidos del archivo son validos
     for i in range(len(linea)):
@@ -61,18 +60,19 @@ def verificaPriUltFila(lista, fila, columna, caracteres):
             lista[fila - 1][i] = '#'
     return lista
 
-def obtenerMapa(file):
+def obtenerMapa(filename):
     lista =[]
     caracteres = ['#', ' ', '.', '@', '+', '$', '*', '\n']
     columna = 0
     fila = 0
-    with open(file, 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
+    with open(filename, 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
         for linea in f:
             validaCaracteres(linea, fila, columna, caracteres)
             fila, columna=obtieneTamFilCol(linea, fila, columna, caracteres)
             lista.append(rellenarEspaciosBlancos(linea, fila, columna, caracteres)) #carga linea por linea el archivo a la lista
     f.closed
     return verificaPriUltFila(encuadrarLista(lista, fila, columna, caracteres), fila, columna, caracteres)
+
 #main
 #if __name__ == "__main__":
 #a = obtenerMapa("workfile")
