@@ -2,6 +2,7 @@
 
 import sys
 
+from constantes import *
 
 class state:
 
@@ -14,6 +15,7 @@ class state:
     playerX=-1
     playerY=-1
     
+    # Generar un nuevo estado desde un estado anterior y un movimiento
     def __init__(self, prevState, move):
         # Copia las dimensiones del laberinto
         self.matrixX = prevState.matrixX
@@ -26,6 +28,31 @@ class state:
         self.playerX = prevState.playerX
         self.playerY = prevState.playerY
     
+    # Genera un nuevo estado a partir de un mapeo
+    def __init__(self, map):
+        self.matrix = copy.deepcopy(map)
+        self.matrixX = 0
+        self.matrixY = 0
+        
+        x = 0
+        for column in map:
+            y = 0
+            for item in column:
+                if item == CHAR_PLAYER or item == CHAR_PLAYER_S:
+                    self.playerX = x
+                    self.playerY = y
+                y += 1
+                
+                # verifica el tamanho de la matriz
+                if self.matrixY < y + 1:
+                    self.matrixY = y
+            x += 1
+            
+            # verifica el tamanho de la matriz
+            if self.matrixX < x + 1:
+                self.matrixX = x
+
+    
     # Decide a que direccion mover al jugador
     def movePlayer(self, move):
         direction = getMoveDirection(move)
@@ -37,7 +64,7 @@ class state:
             return self.movePlayerDir(-1, 0)
         elif direction == MOVE_RIGHT:
             return self.movePlayerDir(1, 0)  
-        else
+        else:
             return False
     
     # Realiza los cambios en el laberinto para mover al jugador hacia arriba
@@ -60,7 +87,7 @@ class state:
                 self.setItemR(2 * x, 2 * y, CHAR_BOX) #Mover la caja al espacio
             elif pos2 == CHAR_SPACE_S: # Espacio vacio de meta
                 self.setItemR(2 * x, 2 * y, CHAR_BOX_S) #Mover la caja a la meta
-            else #otro elemento no vacio
+            else: #otro elemento no vacio
                 return False #No se puede mover la caja a un lugar no vacio
         
         # Determina como escribir al jugador
@@ -68,7 +95,7 @@ class state:
             self.setItemR(x, y, CHAR_PLAYER) 
         elif pos1 == CHAR_BOX_S or pos1 == CHAR_SPACE_S: #meta
             self.setItemR(x, y, CHAR_PLAYER_S)
-        else
+        else:
             return False # Si para por aqui, hay error en el programa
         
         # determina que colocar en la posicion original del jugador
@@ -76,7 +103,7 @@ class state:
             self.setItem(0, 0, CHAR_SPACE_S)
         elif pos0 == CHAR_PLAYER:
             self.setItemR(0, 0, CHAR_SPACE)
-        else
+        else:
             return False # Si pasa por aqui hay error en el programa
         
         # Actualizar la ubicacion del jugador
@@ -85,9 +112,9 @@ class state:
     
     # Obtiene el valor de un item dentro del laberinto
     def getItem(self, x, y):
-        if self.validPosition(x, y)
+        if self.validPosition(x, y):
             return self.matrix[x][y]
-        else
+        else:
             #manejar error de coordenadas incorrectas
             return False
     
@@ -100,9 +127,10 @@ class state:
     
     # Establece el valor de un item dentro del laberinto
     def setItem(self, x, y, value):
-        if self.validPosition(x, y)
+        if self.validPosition(x, y):
             self.matrix[x][y] = value
-        else
+        else:
+            return False
             #manejar error de coordenadas incorrectas
     
     # Establece el valor de una posicion relativa al jugador
