@@ -15,126 +15,58 @@ import copy
 printTableFather=False
 import time
 
-from constantes import CHAR_PLAYER, CHAR_PLAYER_S
+from constantes import *
+from state import sokobanState
 
+def generateMoves(state, listMoves):
+    listMoves = generateMove(state, listMoves, 1, 0)
+    listMoves = generateMove(state, listMoves, 0, 1)
+    listMoves = generateMove(state, listMoves, -1, 0)
+    listMoves = generateMove(state, listMoves, 0, -1)
+    return listMoves
 
-# Busca el jugador dentro del laberinto
-def findPlayer(state):
-    x=0
-    for i in state:
-        y=0
-        for j in i:
-            if j == CHAR_PLAYER or j == CHAR_PLAYER_S:
-                return x, y
-            y+=1
-        x+=1
-    return False, False
-
-def canMove(x, y, listMoves,  state):
-    try :
-        if state[x+1][y]==' ':
-            listMoves.append(0)
-        if state[x-1][y]==' ':
-            listMoves.append(1)
-        if state[x][y+1]==' ':
-            listMoves.append(2)
-        if state[x][y-1]==' ':
-            listMoves.append(3)
-        if state[x+1][y]=='$' and state[x+2][y]==' ' :
-            listMoves.append(4)  
-        if state[x-1][y]=='$'and state[x-2][y]==' ' :
-            listMoves.append(5)
-        if state[x][y+1]=='$'and state[x][y+2]==' ' :
-            listMoves.append(6)
-        if state[x][y-1]=='$'and state[x][y-2]==' ' :
-            listMoves.append(7)
-        if state[x+1][y]=='$' and state[x+2][y]=='.' :
-            listMoves.append(8)  
-        if state[x-1][y]=='$'and state[x-2][y]=='.' :
-            listMoves.append(9)
-        if state[x][y+1]=='$'and state[x][y+2]=='.' :
-            listMoves.append(10)
-        if state[x][y-1]=='$'and state[x][y-2]=='.' :
-            listMoves.append(11)
+def generateMove(state, listMoves, x, y):
+    try:
+        pos0 = state.getItemR(0, 0)           # Determino lo que hay a 0 pasos
+        pos1 = state.getItemR(x, y)           # Determino lo que hay a 1 paso
+        pos2 = state.getItemR(2 * x, 2 * y)   # Determino lo que hay a 2 pasos
+   
+        if x == 1 and y == 0:
+            movement = MOVE_RIGHT
+        elif x == -1 and y == 0:
+            movement = MOVE_LEFT
+        elif x == 0 and y == 1:
+            movement = MOVE_DOWN
+        elif x == 0 and y == -1:
+            movement = MOVE_UP
+        else:
+            return listMoves
+        
+        # Verifica si el jugador esta sobre una posicion de meta
+        if pos0 == CHAR_PLAYER_S:
+            movement = movement | POS0_SPOT
+        
+        # Verifica si el siguiente espacio es un lugar de meta
+        if pos1 == CHAR_BOX_S or pos1 == CHAR_SPACE_S:
+            movement = movement | POS1_SPOT
+        
+        # Si el siguiente espacio contiene una caja
+        if pos1 == CHAR_BOX or pos1 == CHAR_BOX_S:
+            movement = movement | PUSH_BOX
+            
+            if pos2 == CHAR_SPACE_S:
+                movement = movement | POS1_SPOT
+            elif pos2 == CHAR_SPACE:
+                movement = movement
+            else:
+                return listMoves
+        
+        listMoves.append(movement)
+        
         return listMoves
     except:
         return listMoves
         
-def move(x, y,  listMoves, listStates,  state):
-    tableS = Table()
-    tableS.table= copy.deepcopy(state)
-    tableS.table[x][y]=' '
-    try :
-        for i in listMoves:
-            if i==0:
-                tableS.table[x+1][y]= '@'
-                listStates.append(copy.deepcopy(tableS))     #copia la tabla y la agrega a la lista de posible movidas
-                tableS.table[x+1][y]= ' '                                      #"cerar" la tabla
-            if i==1:
-                tableS.table[x-1][y]= '@'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x-1][y]= ' '
-            if i==2:
-                tableS.table[x][y+1]= '@'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x][y+1]= ' '
-            if i==3:
-                tableS.table[x][y-1]= '@'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x][y-1]= ' '
-            if i==4:
-                tableS.table[x+1][y]= '@'
-                tableS.table[x+2][y]='$'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x+1][y]= ' '
-                tableS.table[x+2][y]=' '
-            if i==5:
-                tableS.table[x-1][y]= '@'
-                tableS.table[x-2][y]='$'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x-1][y]= ' '
-                tableS.table[x-2][y]= ' '
-            if i==6:
-                tableS.table[x][y+1]= '@'
-                tableS.table[x][y+2]='$'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x][y+1]= ' '
-                tableS.table[x][y+2]= ' '
-            if i==7:
-                tableS.table[x][y-1]= '@'
-                tableS.table[x][y-2]='$'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x][y-1]= ' '
-                tableS.table[x][y-2]= ' '
-            if i==8:
-                tableS.table[x+1][y]= '@'
-                tableS.table[x+2][y]='*'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x+1][y]= '.'
-                tableS.table[x+2][y]= ' '
-            if i==9:
-                tableS.table[x-1][y]= '@'
-                tableS.table[x-2][y]='*'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x-1][y]= '.'
-                tableS.table[x-2][y]= ' '
-            if i==10:
-                tableS.table[x][y+1]= '@'
-                tableS.table[x][y+2]='*'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x][y+1]= '.'
-                tableS.table[x][y+2]= ' '
-            if i==11:
-                tableS.table[x][y-1]= '@'
-                tableS.table[x][y-2]='*'
-                listStates.append(copy.deepcopy(tableS))
-                tableS.table[x][y-1]= '.'
-                tableS.table[x][y-2]= ' '
-        return listStates
-    except:
-        return  listStates
-#funcion constructor
-
 ###############################################################################
 #                                 Sokoban Problem                             #
 ###############################################################################
@@ -148,48 +80,54 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
     def goal_test(self, state):
         listPlaces=[]
         listBoxes=[]
-        listPlaces = findPlaces(listPlaces, self.initial.table)
-        listBoxes = findBoxesPlaced(listBoxes, state.table)
+        listPlaces = findPlaces(listPlaces, self.initial)
+        listBoxes = findBoxesPlaced(listBoxes, state)
         if not listBoxes:
             return False
         for i in listBoxes:
                 xB, yB = i
                 for j in listPlaces:
                     xP, yP = j
-                    if xB!=xP or yB!=yP:
+                    if xB != xP or yB != yP:
                         return False
         return True
     
-    def successor(self, state):                              #funcion sucesora
-        listMoves=[]                                         #lista para posibles movimientos
-        listStates=[]                                        #lista para posibles estados de la tabla
-        x, y = findPlayer(state.table)                       #encontrar donde esta el jugador
-        canMove(x, y,listMoves,  state.table)                #puede moverse????  
-        if not listMoves:                                    #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
-            return []                                        #retorna lista vacia la funcion sucesor
-        else:                                                #si la lista tiene algo!!
-            move(x, y, listMoves ,  listStates, state.table) #con listMoves hago los posibles movimientos en listStates
+    def successor(self, state):                         #funcion sucesora
+        listMoves=[]                                    #lista para posibles movimientos
+        listStates=[]                                   #lista para posibles estados de la tabla
+        x, y = state.playerX, state.playerY             #encontrar donde esta el jugador
+        listMoves = generateMoves(state, listMoves)     #puede moverse????  
+        if not listMoves:                               #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
+            return []                                   #retorna lista vacia la funcion sucesor
+        else:                                           #si la lista tiene algo!!
+            
+            # Por cada movimiento posible
+            for movement in listMoves:
+                newState = state.clone()                #generar nuevo estado
+                newState.movePlayer(movement)           #mueve el jugador    
+                listStates.append(newState)             #agregar estado a la lista
+            
             if printTableFather:
-                printTable(state.table, "padre")
+                printTable(state, "padre")
                 raw_input()
             return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
             #en este caso un par de movimiento y la tabla que se movio
     
     def h(self, node):
-        c=0
-        listBoxes=[]
-        listPlaces=[]
+        c = 0
+        listBoxes = []
+        listPlaces = []
         if node.state:
-            x, y = findPlayer(node.state.table)
-            listBoxes = findBoxes(listBoxes, node.state.table)
-            listPlaces = findPlaces(listPlaces, node.state.table)
+            #x, y = findPlayer(node.state.table)
+            listBoxes = findBoxes(listBoxes, node.state)
+            listPlaces = findPlaces(listPlaces, node.state)
             for i in listBoxes:
                 xB, yB = i
-                c+=distancePlayerToBox(x, y, xB, yB)
+                c += distancePlayerToBox(node.state.playerX, node.state.playerY, xB, yB)
                 for j in listPlaces:
                     xP, yP = j
-                    c+=distancePlacesToBoxes(xP, yP, xB, yB)
-        if findBlockedBoxes(listBoxes, node.state.table):
+                    c += distancePlacesToBoxes(xP, yP, xB, yB)
+        if findBlockedBoxes(listBoxes, node.state):
             return infinity
         return c
 
@@ -201,7 +139,7 @@ def wichMove(moveA, listStates, listMoves):
 
 def findBoxes(listBoxes, state):
     x=0
-    for i in state:
+    for i in state.matrix:
         y=0
         for j in i:
             if j=='$':
@@ -212,7 +150,7 @@ def findBoxes(listBoxes, state):
 
 def findPlaces(listPlaces, state):
     x=0
-    for i in state:
+    for i in state.matrix:
         y=0
         for j in i:
             if j=='.':
@@ -223,7 +161,7 @@ def findPlaces(listPlaces, state):
     
 def findBoxesPlaced(listBoxes, state):
     x=0
-    for i in state:
+    for i in state.matrix:
         y=0
         for j in i:
             if j=='*':
@@ -232,7 +170,8 @@ def findBoxesPlaced(listBoxes, state):
         x+=1
     return listBoxes
 
-def findBlockedBoxes(listBoxes, table):
+def findBlockedBoxes(listBoxes, state):
+    table = state.matrix
     for i in listBoxes:
         x, y=i
         if table[x+1][y]=='#' and table[x][y+1]=='#':
@@ -244,66 +183,51 @@ def findBlockedBoxes(listBoxes, table):
         if table[x-1][y]=='#' and table[x][y+1]=='#':
             return True
     return False
-        
 
-
-
-def findGoalState(table):
-    x=0
+# Genera un estado donde todas las cajas estan en su posicion
+def generateGoalState(state):
+    goal = state.clone()
+    table = goal.matrix
+    x = 0
     for i in table:
-        y=0
+        y = 0
         for j in i:
-            if j=='$':
-                table[x][y]=' '
-            y+=1
-        x+=1
-    x=0
+            if j == '$':
+                table[x][y] = ' '
+            y += 1
+        x += 1
+    x = 0
     for i in table:
-        y=0
+        y = 0
         for j in i:
-            if j=='.':
-                table[x][y]='$'
-            y+=1
-        x+=1
-    return table
+            if j == '.':
+                table[x][y] = '$'
+            y += 1
+        x += 1
+    return goal
 
 def distancePlayerToBox(xPlayer, yPlayer, xBox, yBox):
-    return abs(xPlayer-xBox)+abs(yPlayer-yBox)+1
-    
+    return abs(xPlayer - xBox) + abs(yPlayer - yBox) + 1
     
 def distancePlacesToBoxes(xPlace, yPlace, xBox, yBox):
-    return abs(xPlace-xBox)+abs(yPlace-yBox)+5
-    
-class Table():  #nuevo tipo de dato Table que formado por una lista
-    table=[]        #no funciona la hastable si es solo con una tabla da un error de "unhashable type: list"
-                        #entonces es necesario meter una lista dentro de una clase, se entiende que asi es mas formal y lleva un unico puntero
+    return abs(xPlace - xBox) + abs(yPlace - yBox)+5
     
 def printTable(tab, label):
     print "-----------", label                            
     for i in tab:
         print "".join(i)
     print "-----------", label
-    
 
 def main():
     if len(sys.argv)==2 or len(sys.argv)==3:
-        goal = Table()                                              #llamada al constuctor de Table
-        if sys.argv[1]=="-v":
-            printTableFather=True
-            try:
-                goal.table = obtenerMapa(sys.argv[2])
-            except:
-                print "El nombre del archivo es incorrecto"
-                exit(0)
 
+        if sys.argv[1]=="-v":
+            printTableFather = True
+            initial = obtenerMapa(sys.argv[2])
         else:
-            try:
-                goal.table = obtenerMapa(sys.argv[1])
-            except:
-                print "El nombre del archivo es incorrecto"
-                exit(0)
-        initial = copy.deepcopy(goal) #copia real
-        goal.table = findGoalState(goal.table) #encontrar el estado final
+            initial = obtenerMapa(sys.argv[1])
+            
+        goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal) 
         
         x1= time.strftime('%S')
@@ -311,13 +235,20 @@ def main():
         pathS = astar_search(sokoban).path()
         
         x2= time.strftime('%S')
-        timediff = int(x2)-int(x1)
+        timediff = int(x2) - int(x1)
         
+        #Genera la secuencia de estados
+        path = [node.state for node in pathS]
+        states = []
         
-        path = [node.state for node in pathS] 
-        for i in path:
-            printTable(i.table, "")
+        for state in path:
+            states.append(state)
+        
+        i = len(states) - 1
+        while i >= 0:
+            printTable(states[i].matrix, "")
             print
+            i -= 1
             
         print 'Tiempo:', timediff,'segundos'
         

@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-import sys
-
+import copy
 from constantes import *
 
-class state:
+class sokobanState:
 
     # Variables que definen las dimensiones del laberinto
     matrixX=0
@@ -14,19 +13,6 @@ class state:
     # Variable para ayudar a ubicar rapidamente la posicion del jugador
     playerX=-1
     playerY=-1
-    
-    # Generar un nuevo estado desde un estado anterior y un movimiento
-    def __init__(self, prevState, move):
-        # Copia las dimensiones del laberinto
-        self.matrixX = prevState.matrixX
-        self.matrixY = prevState.matrixY
-        
-        # Copia la matriz que representa el laberinto
-        self.matrix = copy.deepcopy(prevState.matrix)
-        
-        # Copia la posicion actual del jugador
-        self.playerX = prevState.playerX
-        self.playerY = prevState.playerY
     
     # Genera un nuevo estado a partir de un mapeo
     def __init__(self, map):
@@ -52,6 +38,9 @@ class state:
             if self.matrixX < x + 1:
                 self.matrixX = x
 
+    def clone(self):
+        newState = sokobanState(self.matrix)
+        return newState
     
     # Decide a que direccion mover al jugador
     def movePlayer(self, move):
@@ -73,12 +62,12 @@ class state:
         if (x == 0 and y == 0) or (x != 0 and y != 0) or (x > 1 or x < -1) or (y > 1 or y < -1):
             return False
         
-        if pos1 == CHAR_WALL:
-            return False # No se puede mover al jugador a una pared
-        
         pos0 = self.getItemR(0, 0)           # Determino lo que hay a 0 pasos
         pos1 = self.getItemR(x, y)           # Determino lo que hay a 1 paso
         pos2 = self.getItemR(2 * x, 2 * y)   # Determino lo que hay a 2 pasos
+        
+        if pos1 == CHAR_WALL:
+            return False # No se puede mover al jugador a una pared
         
         # si a 1 paso hay una caja, se debe empujarla a 2 pasos
         if pos1 == CHAR_BOX or pos1 == CHAR_BOX_S: 
@@ -142,3 +131,14 @@ class state:
     def validPosition(self, x, y):
         return (0 <= x and x < self.matrixX) and (0 <= y and y < self.matrixY)
     
+# Busca el jugador dentro del laberinto
+def findPlayer(state):
+    x=0
+    for i in state.matrix:
+        y=0
+        for j in i:
+            if j == CHAR_PLAYER or j == CHAR_PLAYER_S:
+                return x, y
+            y+=1
+        x+=1
+    return False, False

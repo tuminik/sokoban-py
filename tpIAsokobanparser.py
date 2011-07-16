@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+from state import sokobanState
 
 def validaCaracteres(linea, fila, columna, caracteres): #verifica si los caracteres extraidos del archivo son validos
     for i in range(len(linea)):
@@ -22,17 +23,41 @@ def obtieneTamFilCol(linea, fila, columna, caracteres): #obtiene las dimensiones
     
 def obtenerIndice(linea, fila, columna, caracteres):
     try:
-        if linea.index('#') < linea.index('.') and linea.index('#') < linea.index('@') and linea.index('#') < linea.index('+') and linea.index('#') < linea.index('*') and linea.index('#') < linea.index('$'):
+        if linea.index('#') < linea.index('.') \
+        and linea.index('#') < linea.index('@') \
+        and linea.index('#') < linea.index('+') \
+        and linea.index('#') < linea.index('*') \
+        and linea.index('#') < linea.index('$'):
             return linea.index('#')
-        elif linea.index('.') < linea.index('#') and linea.index('.') < linea.index('@') and linea.index('.') < linea.index('+') and linea.index('.') < linea.index('*') and linea.index('.') < linea.index('$'):
+        elif linea.index('.') < linea.index('#') \
+        and linea.index('.') < linea.index('@') \
+        and linea.index('.') < linea.index('+') \
+        and linea.index('.') < linea.index('*') \
+        and linea.index('.') < linea.index('$'):
             return linea.index('.')
-        elif linea.index('@') < linea.index('.') and linea.index('@') < linea.index('#') and linea.index('@') < linea.index('+') and linea.index('@') < linea.index('*') and linea.index('@') < linea.index('$'):
+        elif linea.index('@') < linea.index('.') \
+        and linea.index('@') < linea.index('#') \
+        and linea.index('@') < linea.index('+') \
+        and linea.index('@') < linea.index('*') \
+        and linea.index('@') < linea.index('$'):
             return linea.index('@')
-        elif linea.index('+') < linea.index('.') and linea.index('+') < linea.index('@') and linea.index('+') < linea.index('#') and linea.index('+') < linea.index('*') and linea.index('+') < linea.index('$'):
+        elif linea.index('+') < linea.index('.') \
+        and linea.index('+') < linea.index('@') \
+        and linea.index('+') < linea.index('#') \
+        and linea.index('+') < linea.index('*') \
+        and linea.index('+') < linea.index('$'):
             return linea.index('+')
-        elif linea.index('*') < linea.index('.') and linea.index('*') < linea.index('@') and linea.index('*') < linea.index('+') and linea.index('*') < linea.index('#') and linea.index('*') < linea.index('$'):
+        elif linea.index('*') < linea.index('.') \
+        and linea.index('*') < linea.index('@') \
+        and linea.index('*') < linea.index('+') \
+        and linea.index('*') < linea.index('#') \
+        and linea.index('*') < linea.index('$'):
             return linea.index('*')
-        elif linea.index('$') < linea.index('.') and linea.index('$') < linea.index('@') and linea.index('$') < linea.index('+') and linea.index('$') < linea.index('#') and linea.index('$') < linea.index('*'):
+        elif linea.index('$') < linea.index('.') \
+        and linea.index('$') < linea.index('@') \
+        and linea.index('$') < linea.index('+') \
+        and linea.index('$') < linea.index('#') \
+        and linea.index('$') < linea.index('*'):
             return linea.index('$')
     except:
         return False
@@ -71,7 +96,13 @@ def obtenerMapa(filename):
             fila, columna=obtieneTamFilCol(linea, fila, columna, caracteres)
             lista.append(rellenarEspaciosBlancos(linea, fila, columna, caracteres)) #carga linea por linea el archivo a la lista
     f.closed
-    return verificaPriUltFila(encuadrarLista(lista, fila, columna, caracteres), fila, columna, caracteres)
+    lista = verificaPriUltFila(encuadrarLista(lista, fila, columna, caracteres), fila, columna, caracteres)
+    
+    #try:
+    estado = sokobanState(lista)
+    return estado
+    #except:   
+    #    return lista
 
 #main
 #if __name__ == "__main__":
