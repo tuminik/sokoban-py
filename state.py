@@ -38,7 +38,7 @@ class state:
             return False
     
     # Realiza los cambios en el laberinto para mover al jugador hacia arriba
-    def movePlayerDir(self, x, y)
+    def movePlayerDir(self, x, y):
         # Validacion para detectar movimientos invalidos
         if (x == 0 and y == 0) or (x != 0 and y != 0) or (x > 1 or x < -1) or (y > 1 or y < -1):
             return False
@@ -83,30 +83,33 @@ class state:
     
     
     # Obtiene el valor de un item dentro del laberinto
-    def getItem(self, x, y)
+    def getItem(self, x, y):
         if self.validPosition(x, y)
             return self.matrix[x][y]
         else
             #manejar error de coordenadas incorrectas
             return False
     
+	def __getItem__(self, x):
+	    return self.matrix[x]
+	
     # Obtiene el valor de una posicion relativa al jugador
-    def getItemR(self, x, y)
+    def getItemR(self, x, y):
         return self.getItem(self.playerX + x, self.playerY + y)
     
     # Establece el valor de un item dentro del laberinto
-    def setItem(self, x, y, value)
+    def setItem(self, x, y, value):
         if self.validPosition(x, y)
             self.matrix[x][y] = value
         else
             #manejar error de coordenadas incorrectas
     
     # Establece el valor de una posicion relativa al jugador
-    def setItemR(self, x, y, value)
+    def setItemR(self, x, y, value):
         self.setItem(self.playerX + x, self.playerY + y, value)
     
     # Verifica si las coordenadas proporcionadas se encuentran dentro
     # de los limites del laberinto
-    def validPosition(self, x, y)
+    def validPosition(self, x, y):
         return (0 <= x and x < self.matrixX) and (0 <= y and y < self.matrixY)
     
