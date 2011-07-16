@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import sys
+
+
 class state:
 
     # Variables que definen las dimensiones del laberinto
@@ -22,7 +25,7 @@ class state:
         # Copia la posicion actual del jugador
         self.playerX = prevState.playerX
         self.playerY = prevState.playerY
-        
+    
     # Decide a que direccion mover al jugador
     def movePlayer(self, move):
         direction = getMoveDirection(move)
@@ -45,7 +48,6 @@ class state:
         
         if pos1 == CHAR_WALL:
             return False # No se puede mover al jugador a una pared
-
         
         pos0 = self.getItemR(0, 0)           # Determino lo que hay a 0 pasos
         pos1 = self.getItemR(x, y)           # Determino lo que hay a 1 paso
@@ -68,7 +70,7 @@ class state:
             self.setItemR(x, y, CHAR_PLAYER_S)
         else
             return False # Si para por aqui, hay error en el programa
-    
+        
         # determina que colocar en la posicion original del jugador
         if pos0 == CHAR_PLAYER_S:
             self.setItem(0, 0, CHAR_SPACE_S)
@@ -76,11 +78,10 @@ class state:
             self.setItemR(0, 0, CHAR_SPACE)
         else
             return False # Si pasa por aqui hay error en el programa
-    
+        
         # Actualizar la ubicacion del jugador
         self.playerX += x
         self.playerY += y
-    
     
     # Obtiene el valor de un item dentro del laberinto
     def getItem(self, x, y):
@@ -90,9 +91,9 @@ class state:
             #manejar error de coordenadas incorrectas
             return False
     
-	def __getItem__(self, x):
-	    return self.matrix[x]
-	
+    def __getItem__(self, x):
+        return self.matrix[x]
+    
     # Obtiene el valor de una posicion relativa al jugador
     def getItemR(self, x, y):
         return self.getItem(self.playerX + x, self.playerY + y)
