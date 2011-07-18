@@ -107,8 +107,8 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
                 newState.movePlayer(movement)           #mueve el jugador    
                 listStates.append(newState)             #agregar estado a la lista
             
-            if printTableFather:
-                printTable(state, "padre")
+            if sys.argv[1]=="-v":
+                printTable(state.matrix, "padre")
                 raw_input()
             return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
             #en este caso un par de movimiento y la tabla que se movio
