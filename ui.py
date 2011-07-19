@@ -47,7 +47,7 @@ def callmove(i):
     return wrap
 
 
-def printText(text, eTime , textArea):
+def printText(text, eTime ,cont, textArea):
     try:
         text = "".join(text)  # convert a list or a tuple to a string
     except:
@@ -57,30 +57,30 @@ def printText(text, eTime , textArea):
     textArea.insert(tkinter.END,"SOKOBAN\n\n", "normal")    
     textArea.insert(tkinter.END,text, "normal")
     textArea.insert(tkinter.END,eTime, "normal")
+    textArea.insert(tkinter.END,"\nPaso nro:" + str(cont), "normal")
     textArea.configure(state=tkinter.DISABLED)
 
 
 def changeTableNext(textA, tables):
-    
-    if tables.cont >= len(tables.tabs):
+    if tables.cont >= len(tables.tabs)-1:
         messagebox.showinfo("END", "BINGO!")
-        tables.cont = 0
-    else:   
+        tables.cont = -1
         text = tableToStr(tables.tabs[tables.cont])
-        printText(text, tables.excTime ,  textA)
+    else:
         tables.cont=tables.cont + 1
+        text = tableToStr(tables.tabs[tables.cont])
+        printText(text, tables.excTime,tables.cont ,  textA)
+        
     return
 
 def changeTablePrev(textA, tables):
-    
-    if tables.cont <= 1:
+    if tables.cont <= 0:
         messagebox.showinfo("START", "PRESS NEXT STEP!")
-        tables.cont=1
-        
-    else:   
-        text = tableToStr(tables.tabs[tables.cont])
-        printText(text, tables.excTime ,  textA)
+       
+    else:
         tables.cont=tables.cont-1
+        text = tableToStr(tables.tabs[tables.cont])
+        printText(text, tables.excTime ,tables.cont,  textA)        
     return
 
 def tableNext(textA,  table):
@@ -161,8 +161,7 @@ def main():
             print "Demasiados arguementos..."
     
     text = tableToStr(tables.tabs[0])
-    tables.cont=+1
-    printText(text,tables.excTime, textArea)
+    printText(text,tables.excTime, tables.cont,textArea)
     root.mainloop()
 
 if __name__ == "__main__":
