@@ -61,23 +61,26 @@ def printText(text, eTime , textArea):
 
 
 def changeTableNext(textA, tables):
-    tables.cont=tables.cont+1 
+    
     if tables.cont >= len(tables.tabs):
         messagebox.showinfo("END", "BINGO!")
-        tables.cont=0
+        tables.cont = 1
     else:   
         text = tableToStr(tables.tabs[tables.cont])
         printText(text, tables.excTime ,  textA)
+        tables.cont=tables.cont + 1 
     return
 
 def changeTablePrev(textA, tables):
-    tables.cont=tables.cont-1 
-    if tables.cont <= 0:
+    
+    if tables.cont <= 1:
         messagebox.showinfo("START", "PRESS NEXT STEP!")
-        #tables.cont=0
+        tables.cont=1
+        
     else:   
         text = tableToStr(tables.tabs[tables.cont])
         printText(text, tables.excTime ,  textA)
+        tables.cont=tables.cont-1
     return
 
 def tableNext(textA,  table):
