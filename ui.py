@@ -24,31 +24,6 @@ from sokoban import printTable
 MONOSPACE_FONT_SIZE     =  10
 
 
-table1 = [[' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '\n'], 
-                [' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', '\n'],
-                [' ', ' ', ' ', ' ', '#', '$', ' ', ' ', '#', '\n'], 
-                [' ', ' ', '#', '#', '#', ' ', ' ', '$', '#', '#', '#', '\n'], 
-                [' ', ' ', '#', ' ', ' ', '$', ' ', ' ', '$', ' ', '#', '\n'], 
-                ['#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '\n'],
-                ['#', ' ', ' ', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', ' ', ' ', '.', '.', '#', '\n'], 
-                ['#', ' ', '$', ' ', ' ', '$', ' ', ' ', ' ', ' ', ' ', ' ', '@', ' ', '.', '.', '#', '\n'],
-                ['#', '#', '#', '#', '#', ' ', '#', '#', '#', '#', ' ', '#', ' ', ' ', '.', '.', '#', '\n'], 
-                [' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '\n'],
-                [' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', '\n']]
-
-table2 = [[' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '\n'], 
-                [' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', '\n'],
-                [' ', ' ', ' ', ' ', '#', '$', ' ', ' ', '#', '\n'], 
-                [' ', ' ', '#', '#', '#', ' ', ' ', '$', '#', '#', '#', '\n'], 
-                [' ', ' ', '#', ' ', ' ', '$', ' ', ' ', '$', ' ', '#', '\n'], 
-                ['#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '\n'],
-                ['#', ' ', ' ', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '@', ' ', '.', '.', '#', '\n'], 
-                ['#', ' ', '$', ' ', ' ', '$', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '.', '.', '#', '\n'],
-                ['#', '#', '#', '#', '#', ' ', '#', '#', '#', '#', ' ', '#', ' ', ' ', '.', '.', '#', '\n'], 
-                [' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '\n'],
-                [' ', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', '\n']]
-
-
 class tables():
     tabs= []
     cont=0
@@ -85,7 +60,7 @@ def printText(text, eTime , textArea):
     textArea.configure(state=tkinter.DISABLED)
 
 
-def changeTable(textA, tables):
+def changeTableNext(textA, tables):
     tables.cont=tables.cont+1 
     if tables.cont >= len(tables.tabs):
         messagebox.showinfo("END", "BINGO!")
@@ -95,10 +70,25 @@ def changeTable(textA, tables):
         printText(text, tables.excTime ,  textA)
     return
 
-def table(textA,  table):
-    def wrap():
-        changeTable( textA, table)
-    return wrap
+def changeTablePrev(textA, tables):
+    tables.cont=tables.cont-1 
+    if tables.cont <= 0:
+        messagebox.showinfo("START", "PRESS NEXT STEP!")
+        #tables.cont=0
+    else:   
+        text = tableToStr(tables.tabs[tables.cont])
+        printText(text, tables.excTime ,  textA)
+    return
+
+def tableNext(textA,  table):
+    def wrapNext():
+        changeTableNext( textA, table)
+    return wrapNext
+
+def tablePrev(textA,  table):
+    def wrapPrev():
+        changeTablePrev( textA, table)
+    return wrapPrev
     
 TOP = "top"
 YES = True
@@ -117,10 +107,11 @@ character_width = int((root_width * 0.6) / MONOSPACE_FONT_SIZE)
 textArea = tkinter.Text(root,height=25,width=character_width, padx="1m", pady="1m")
 textArea.pack(side=tkinter.LEFT, fill=BOTH, expand=YES)
 
-newbtn = tkinter.Button(root, command=table(textArea, tables), text="NEXT STEP")
-newbtn.pack(side=BOTTOM, expand=NO, fill=X)
+nextbtn = tkinter.Button(root, command=tableNext(textArea, tables), text="NEXT STEP")
+nextbtn.pack(side=BOTTOM, expand=NO, fill=X)
 
-
+prevbtn = tkinter.Button(root, command=tablePrev(textArea, tables), text="PREV STEP")
+prevbtn.pack(side=BOTTOM, expand=NO, fill=X)
 
 
 
