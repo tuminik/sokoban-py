@@ -2,6 +2,7 @@
 
 import copy
 from constantes import *
+from debug import *
 
 class sokobanState:
 
@@ -13,6 +14,10 @@ class sokobanState:
     # Variable para ayudar a ubicar rapidamente la posicion del jugador
     playerX=-1
     playerY=-1
+    
+    # Listas con las coordenadas de las cajas
+    boxesX=[]
+    boxesY=[]
     
     # Genera un nuevo estado a partir de un mapeo
     def __init__(self, map):
@@ -37,6 +42,8 @@ class sokobanState:
             # verifica el tamanho de la matriz
             if self.matrixX < x + 1:
                 self.matrixX = x
+        
+        self.boxesX, self.boxesY = self.ListBoxes()
 
     def clone(self):
         newState = sokobanState(self.matrix)
@@ -96,32 +103,52 @@ class sokobanState:
     
     # Decide a que direccion mover al jugador
     def movePlayer(self, move):
-        direction = getMoveDirection(move)
-        if direction == MOVE_UP:
-            return self.movePlayerDir(0, -1)
-        elif direction == MOVE_DOWN:
-            return self.movePlayerDir(0, 1)
-        elif direction == MOVE_LEFT:
-            return self.movePlayerDir(-1, 0)
-        elif direction == MOVE_RIGHT:
-            return self.movePlayerDir(1, 0)  
-        else:
-            return False
+        try:
+            direction = getMoveDirection(move)
+            if direction == MOVE_UP:
+                r = self.movePlayerDir(0, -1)
+            elif direction == MOVE_DOWN:
+                r = self.movePlayerDir(0, 1)
+            elif direction == MOVE_LEFT:
+                r = self.movePlayerDir(-1, 0)
+            elif direction == MOVE_RIGHT:
+                r = self.movePlayerDir(1, 0)  
+            else:
+                return False
+            
+            if r:
+                self.boxesX, self.boxesY = self.ListBoxes()
+        except Exception as ex:
+            if direction == MOVE_UP:
+                errorMsg = "Error al mover al jugador hacia arriba[" + str(move) + "]"
+            elif direction == MOVE_DOWN:
+                errorMsg = "Error al mover al jugador hacia abajo[" + str(move) + "]"
+            elif direction == MOVE_LEFT:
+                errorMsg = "Error al mover al jugador hacia izquierda[" + str(move) + "]"
+            elif direction == MOVE_RIGHT:
+                errorMsg = "Error al mover al jugador hacia derecha[" + str(move) + "]"
+            else:
+                errorMsg = "Error al mover[" + str(move) + "]"
+            
+            raise Exception(errorMsg, ex)
     
     # Decide a que direccion mover al jugador en reversa
     def movePlayerReverse(self, move, pull):
         direction = getMoveDirecion(move)
         if direction == MOVE_UP:
-            return self.movePlayerDir(0, -1, pull)
+            r = self.movePlayerDir(0, -1, pull)
         elif direction == MOVE_DOWN:
-            return self.movePlayerDir(0, 1, pull)
+            r = self.movePlayerDir(0, 1, pull)
         elif direction == MOVE_LEFT:
-            return self.movePlayerDir(-1, 0, pull)
+            r = self.movePlayerDir(-1, 0, pull)
         elif direction == MOVE_RIGHT:
-            return self.movePlayerDir(1, 0, pull)
+            r = self.movePlayerDir(1, 0, pull)
         else:
             return False
-    
+         
+        if r:
+            self.boxesX, self.boxesY = self.ListBoxes()
+
     # Realiza los cambios en el laberinto para mover al jugador
     def movePlayerDir(self, x, y):
         # Validacion para detectar movimientos invalidos
@@ -155,7 +182,7 @@ class sokobanState:
         
         # determina que colocar en la posicion original del jugador
         if pos0 == CHAR_PLAYER_S:
-            self.setItem(0, 0, CHAR_SPACE_S)
+            self.setItemR(0, 0, CHAR_SPACE_S)
         elif pos0 == CHAR_PLAYER:
             self.setItemR(0, 0, CHAR_SPACE)
         else:
@@ -237,6 +264,11 @@ class sokobanState:
     # Establece el valor de un item dentro del laberinto
     def setItem(self, x, y, value):
         if self.validPosition(x, y):
+            if self.matrix[x][y] == CHAR_WALL:
+                errorMsg = "No se puede modificar pared en [" + str(x) + "," + str(y) + "]!"
+                errorMsg += "\nJugador en [" + str(self.playerX) + "," + str(self.playerY) + "]\n"
+                #errorMsg += "".join(printTable(self.matrix, "Error"))
+                raise Exception(errorMsg)
             self.matrix[x][y] = value
         else:
             return False
@@ -251,6 +283,57 @@ class sokobanState:
     def validPosition(self, x, y):
         return (0 <= x and x < self.matrixX) and (0 <= y and y < self.matrixY)
     
+    def __eq__(self, other):
+        if other is self:
+            #si tienen la misma posicion de memoria
+            return True
+        if isinstance(other, sokobanState):
+            if self.playerX != other.playerX or self.playerY != other.playerY:
+                #si el jugador no esta en el mismo lugar
+                return False
+            else:
+                if len(self.boxesX) != len(other.boxesX) \
+                or len(self.boxesY) != len(other.boxesY):
+                    #si no hay la misma cantidad de cajas
+                    return False
+                else:
+                    for x in range(len(self.boxesX)):
+                        for y in range(len(self.boxesY)):
+                            if self.boxesX[x] != other.boxesX[x] \
+                            or self.boxesY[y] != other.boxesY[y]:
+                                #posicion de caja no coincide
+                                return False
+                    return True
+        else:
+            #si no corresponde a la misma clase
+            return False
+    
+    def __hash__(self):
+        h = hash(self.matrixX)
+        h = h ^ hash(self.matrixY)
+        h = h ^ hash(self.playerX)
+        h = h ^ hash(self.playerY)
+        for boxX in self.boxesX:
+            h = h ^ hash(boxX)
+        for boxY in self.boxesY:
+            h = h ^ hash(boxY)
+        return h
+    
+    def ListBoxes(self):
+        xlist=[]
+        ylist=[]
+        x=0
+        for column in self.matrix:
+            y=0
+            for position in column:
+                if position == CHAR_BOX or position == CHAR_BOX_S:
+                    xlist.append(x)
+                    ylist.append(y)
+                y += 1
+            x += 1
+        
+        return xlist, ylist
+    
 # Busca el jugador dentro del laberinto
 def findPlayer(state):
     x=0
@@ -262,3 +345,5 @@ def findPlayer(state):
             y+=1
         x+=1
     return False, False
+
+    
