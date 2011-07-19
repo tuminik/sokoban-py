@@ -64,11 +64,11 @@ def changeTableNext(textA, tables):
     
     if tables.cont >= len(tables.tabs):
         messagebox.showinfo("END", "BINGO!")
-        tables.cont = 1
+        tables.cont = 0
     else:   
         text = tableToStr(tables.tabs[tables.cont])
         printText(text, tables.excTime ,  textA)
-        tables.cont=tables.cont + 1 
+        tables.cont=tables.cont + 1
     return
 
 def changeTablePrev(textA, tables):
