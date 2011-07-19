@@ -61,7 +61,8 @@ def generateMove(state, listMoves, x, y):
             else:
                 return listMoves
         
-        listMoves.append(movement)
+        if state.canMove(movement):
+            listMoves.append(movement)
         
         return listMoves
     except:

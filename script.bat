@@ -1,2 +1,2 @@
-python sokoban.py problemas\logo.txt
+python ui.py problemas\problema1
 pause
