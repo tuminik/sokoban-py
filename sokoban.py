@@ -79,19 +79,23 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
         self.initial=self
     
     def goal_test(self, state):
-        listPlaces=[]
-        listBoxes=[]
-        listPlaces = findPlaces(listPlaces, self.initial)
-        listBoxes = findBoxesPlaced(listBoxes, state)
-        if not listBoxes:
+        boxes=0
+        boxes_s=0
+        spaces_s=0
+        
+        for column in state.matrix:
+            for position in column:
+                if position == CHAR_BOX:
+                    boxes += 1
+                #elif position == CHAR_BOX_S:
+                #    boxes_s += 1
+                elif position == CHAR_SPACE_S:
+                    spaces_s += 1
+        
+        if boxes == 0 and spaces_s == 0:
+            return True
+        else:
             return False
-        for i in listBoxes:
-                xB, yB = i
-                for j in listPlaces:
-                    xP, yP = j
-                    if xB != xP or yB != yP:
-                        return False
-        return True
     
     def successor(self, state):                         #funcion sucesora
         listMoves=[]                                    #lista para posibles movimientos
