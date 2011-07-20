@@ -134,27 +134,32 @@ def main():
         
         x1= time.strftime('%S')
         
-        pathS = astar_search(sokoban).path()
+        search = astar_search(sokoban)
         
-        x2= time.strftime('%S')
-        timediff = int(x2) - int(x1)
-        
-        #Genera la secuencia de estados
-        path = [node.state for node in pathS]
-        states = []
-        
-        for state in path:
-            states.append(state)
-        
-        i = len(states) - 1
-        while i >= 0:
-            printTable(states[i].matrix, "")
-            tables.tabs.append(states[i].matrix)
-            print
-            i -= 1
-        tables.excTime= 'Tiempo:', timediff,'segundos'
-        print 'Tiempo:', timediff,'segundos'
-        
+        if search:
+            pathS = search.path()
+
+            x2= time.strftime('%S')
+            timediff = int(x2) - int(x1)
+            
+            #Genera la secuencia de estados
+            path = [node.state for node in pathS]
+            states = []
+            
+            for state in path:
+                states.append(state)
+            
+            i = len(states) - 1
+            while i >= 0:
+                printTable(states[i].matrix, "")
+                tables.tabs.append(states[i].matrix)
+                print
+                i -= 1
+            tables.excTime= 'Tiempo:', timediff,'segundos'
+            print 'Tiempo:', timediff,'segundos'
+
+        else:
+            print "No se pudo encontrar la solucion al problema"
     else:
         if len(sys.argv)<2:
             print "Debe recibir el nombre del archivo..."
