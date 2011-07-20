@@ -9,10 +9,14 @@ def imprimir(lista):
 		#for j in range(len(lista[i])):
 			print lista[i]#[j]
 			
-def findPlayer(lista, fila, columna, char):
+def findPlayer(lista, fila, columna):
 	for i in range(fila):
-		if obtenerIndiceLinea(lista[i], columna, char) != columna:
-			return i, obtenerIndiceLinea(lista[i], columna, char)
+		if obtenerIndiceLinea(lista[i], columna, '@') != columna:
+			return i, obtenerIndiceLinea(lista[i], columna, '@')
+			
+	for i in range(fila):
+		if obtenerIndiceLinea(lista[i], columna, '+') != columna:
+			return i, obtenerIndiceLinea(lista[i], columna, '+')
 			
 def cantidadChar(lista, fila, char):
 	cantidad = 0
@@ -124,7 +128,7 @@ def obtenerMapa(filename, fila, columna):
     estado = sokobanState(lista)
     estado.matrixX = fila
     estado.matrixY = columna
-    estado.playerX, estado.playerY = findPlayer(lista, fila, columna, '@')
+    estado.playerX, estado.playerY = findPlayer(lista, fila, columna)
     return estado
     #except:   
     #    return lista
