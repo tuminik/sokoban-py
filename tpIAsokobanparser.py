@@ -113,9 +113,10 @@ def obtenerMapa(filename, fila, columna):
         sys.exit("La cantidad de cajas no coincide con la cantidad de lugares, Arreglelo!!")
     elif not cantidadChar(lista, fila, '.'):
         sys.exit("No se encontraron ni cajas, ni lugares, Arreglelo!!")
-    if not cantidadChar(lista, fila, '@'):
+    if not (cantidadChar(lista, fila, '@') + cantidadChar(lista, fila, '+')):
         sys.exit("No se encuentra al jugador, Agreguelo!!")
-    elif cantidadChar(lista, fila, '@') > 1:
+    elif cantidadChar(lista, fila, '@') > 1 or cantidadChar(lista, fila, '+') > 1 \
+	or cantidadChar(lista, fila, '@') + cantidadChar(lista, fila, '+') > 1:
         sys.exit("Existe mas de un jugador, Agreguelo!!")
     else:
         lista = verificaPriUltFila(encuadrarLista(lista, columna), fila)
