@@ -22,11 +22,11 @@ def cantidadChar(lista, fila, char):
 	return cantidad
 	
 def encuadrarLista(lista, columna):
-	for i in range(len(lista)):
-		 for j in range(columna - len(lista[i])):
-			lista[i].append('#')
-	return lista
-	
+    for i in range(len(lista)):
+         for j in range(columna - len(lista[i])):
+            lista[i].append('#')
+    return lista
+
 def verificaPriUltFila(lista, fila):
 	for i in range(len(lista[0])):
 		if lista[0][i] != '#':
@@ -102,28 +102,28 @@ def validaCaracteres(linea): #verifica si los caracteres extraidos del archivo s
 			sys.exit("algun caracter no es aceptado, Arreglelo!!")#al no ser validos detiene la ejecucion
 
 def obtenerMapa(filename, fila, columna):
-	lista =[]
-	with open('workfile2', 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
-		for linea in f:
-			validaCaracteres(linea)
-			fila, columna = obtieneTamFilCol(columna, fila, linea)
-			lista.append(rellenarEspaciosBlancos(columna, linea)) #carga linea por linea el archivo a la lista
-	f.closed
-	if cantidadChar(lista, fila, '.') != cantidadChar(lista, fila, '$'):
-		sys.exit("La cantidad de cajas no coincide con la cantidad de lugares, Arreglelo!!")
-	elif not cantidadChar(lista, fila, '.'):
-		sys.exit("No se encontraron ni cajas, ni lugares, Arreglelo!!")
-	if not cantidadChar(lista, fila, '@'):
-		sys.exit("No se encuentra al jugador, Agreguelo!!")
-	elif cantidadChar(lista, fila, '@') > 1:
-		sys.exit("Existe mas de un jugador, Agreguelo!!")
-	else:
-		lista = verificaPriUltFila(encuadrarLista(lista, columna), fila)
-	#try
-	estado = sokobanState(lista)
-	estado.matrixX = fila
-	estado.matrixY = columna
-	estado.playerX, estado.playerY = findPlayer(lista, fila, columna, '@')
+    lista =[]
+    with open(filename, 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
+        for linea in f:
+            validaCaracteres(linea)
+            fila, columna = obtieneTamFilCol(columna, fila, linea)
+            lista.append(rellenarEspaciosBlancos(columna, linea)) #carga linea por linea el archivo a la lista
+    f.closed
+    if cantidadChar(lista, fila, '.') != cantidadChar(lista, fila, '$'):
+        sys.exit("La cantidad de cajas no coincide con la cantidad de lugares, Arreglelo!!")
+    elif not cantidadChar(lista, fila, '.'):
+        sys.exit("No se encontraron ni cajas, ni lugares, Arreglelo!!")
+    if not cantidadChar(lista, fila, '@'):
+        sys.exit("No se encuentra al jugador, Agreguelo!!")
+    elif cantidadChar(lista, fila, '@') > 1:
+        sys.exit("Existe mas de un jugador, Agreguelo!!")
+    else:
+        lista = verificaPriUltFila(encuadrarLista(lista, columna), fila)
+    #try
+    estado = sokobanState(lista)
+    estado.matrixX = fila
+    estado.matrixY = columna
+    estado.playerX, estado.playerY = findPlayer(lista, fila, columna, '@')
     return estado
     #except:   
     #    return lista

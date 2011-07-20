@@ -224,10 +224,9 @@ def printTable(tab, label):
     print "-----------", label
 
 def main():
-	columna = 0
-	fila = 0
+    columna = 0
+    fila = 0
     if len(sys.argv)==2 or len(sys.argv)==3:
-
         if sys.argv[1]=="-v":
             printTableFather = True
             initial = obtenerMapa(sys.argv[2], fila, columna)
