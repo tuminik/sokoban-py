@@ -109,7 +109,7 @@ def obtenerMapa(filename, fila, columna):
             fila, columna = obtieneTamFilCol(columna, fila, linea)
             lista.append(rellenarEspaciosBlancos(columna, linea)) #carga linea por linea el archivo a la lista
     f.closed
-    if cantidadChar(lista, fila, '.') != cantidadChar(lista, fila, '$'):
+    if cantidadChar(lista, fila, '.') + cantidadChar(lista, fila, '+') != cantidadChar(lista, fila, '$'):
         sys.exit("La cantidad de cajas no coincide con la cantidad de lugares, Arreglelo!!")
     elif not cantidadChar(lista, fila, '.'):
         sys.exit("No se encontraron ni cajas, ni lugares, Arreglelo!!")
