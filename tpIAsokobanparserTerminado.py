@@ -100,7 +100,7 @@ def validaCaracteres(linea): #verifica si los caracteres extraidos del archivo s
 			print linea[i], i #imprime el caracter invalido y la posicion
 			sys.exit("algun caracter no es aceptado, Arreglelo!!")#al no ser validos detiene la ejecucion
 
-def obtenerMapa(columna, fila):
+def obtenerMapa(filename, fila, columna):
 	lista =[]
 	with open('workfile2', 'r') as f: #abre y cierra el archivo apropiadamente incluso si se genero una excepcion
 		for linea in f:
