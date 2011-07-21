@@ -268,6 +268,9 @@ class SokobanState:
          
         if r:
             self.boxesX, self.boxesY = ListBoxes(self)
+            self.steps += 1
+            if isPushingBox(move):
+                self.pushes += 1
     
     # Realiza los cambios en el laberinto para mover al jugador en reversa
     def movePlayerDirReverse(self, x, y, pull):

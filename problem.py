@@ -13,9 +13,12 @@ from heuristic import SokobanHeuristic
 
 class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
     
+    expanded = 0
+    
     #recibe la tabla de juego y construye
     def _init_(self):
         self.initial=self
+        self.expanded = 0
     
     def goal_test(self, state):
         boxes=0
@@ -36,11 +39,13 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
         else:
             return False
     
+    
     def successor(self, state):                         #funcion sucesora
         listMoves=[]                                    #lista para posibles movimientos
         listStates=[]                                   #lista para posibles estados de la tabla
         x, y = state.playerX, state.playerY             #encontrar donde esta el jugador
         listMoves = generateMoves(state, listMoves)     #puede moverse????  
+        self.expanded += 1
         if not listMoves:                               #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
             return []                                   #retorna lista vacia la funcion sucesor
         else:                                           #si la lista tiene algo!!

@@ -57,6 +57,7 @@ def main():
             print 'Tiempo:', timediff,'segundos'
         else:
             print "No se pudo encontrar la solucion al problema"
+        print "Nodos expandidos:", sokoban.expanded
     else:
         if len(sys.argv)<2:
             print "Debe recibir el nombre del archivo..."
