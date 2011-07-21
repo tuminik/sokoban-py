@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+import sys
+import copy
+import time
+
+from utils import infinity
 from ai import Problem
 from ai import astar_search
 from ai import iterative_deepening_search
@@ -8,15 +13,12 @@ from ai import depth_first_graph_search
 from ai import breadth_first_tree_search
 from ai import breadth_first_graph_search
 from ai import depth_limited_search
-from utils import infinity
-import sys
-from tpIAsokobanparser import obtenerMapa
-import copy
-printTableFather=False
-import time
 
 from constantes import *
 from state import sokobanState
+from tpIAsokobanparser import obtenerMapa
+
+printTableFather = False
 
 def generateMoves(state, listMoves):
     listMoves = generateMove(state, listMoves, 1, 0)
@@ -113,7 +115,8 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
                 listStates.append(newState)             #agregar estado a la lista
             
             if sys.argv[1]=="-v":
-                printTable(state.matrix, "padre")
+                #printTable(state.matrix, "padre")
+                state.printTableDebug()
                 raw_input()
             return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
             #en este caso un par de movimiento y la tabla que se movio
@@ -217,11 +220,11 @@ def distancePlayerToBox(xPlayer, yPlayer, xBox, yBox):
 def distancePlacesToBoxes(xPlace, yPlace, xBox, yBox):
     return abs(xPlace - xBox) + abs(yPlace - yBox)+5
     
-def printTable(tab, label):
-    print "-----------", label                            
-    for i in tab:
-        print "".join(i)
-    print "-----------", label
+#def printTable(tab, label):
+#    print "-----------", label                            
+#    for i in tab:
+#        print "".join(i)
+#    print "-----------", label
 
 def main():
     columna = 0
@@ -255,7 +258,7 @@ def main():
             
             i = len(states) - 1
             while i >= 0:
-                printTable(states[i].matrix, "")
+                states[i].printTable()
                 print
                 i -= 1
                 
