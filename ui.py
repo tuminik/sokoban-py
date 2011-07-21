@@ -27,6 +27,7 @@ class tables():
     tabs= []
     cont=0
     excTime=""
+    expand=0
     
 
 def tableToStr(tableS):
@@ -58,6 +59,7 @@ def printText(text, eTime ,cont, textArea):
     textArea.insert(tkinter.END,eTime, "normal")
     textArea.insert(tkinter.END,"\nPaso nro:" + str(cont), "normal")
     textArea.insert(tkinter.END,"\nCantidad de Pasos:" + str(len(tables.tabs)), "normal")
+    textArea.insert(tkinter.END,"\nCantidad de Nodos Expandidos:" + str(tables.expand), "normal")
     textArea.configure(state=tkinter.DISABLED)
 
 
@@ -131,14 +133,11 @@ def main():
             
         goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal) 
-        
-        x1= time.strftime('%S')
-        
         search = astar_search(sokoban)
         
         if search:
+            x1= time.strftime('%S')
             pathS = search.path()
-
             x2= time.strftime('%S')
             timediff = int(x2) - int(x1)
             
@@ -154,6 +153,7 @@ def main():
                 tables.tabs.append(states[i].matrix)
                 i -= 1
             tables.excTime= 'Tiempo:', timediff,'segundos'
+            tables.expand = sokoban.expanded
 
         else:
             print "No se pudo encontrar la solucion al problema"
