@@ -20,7 +20,7 @@ printTableFather=False
 import time
 from sokoban import generateGoalState
 from sokoban import SokobanProblem
-MONOSPACE_FONT_SIZE     =  10
+MONOSPACE_FONT_SIZE =  10
 
 
 class tables():

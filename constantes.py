@@ -49,7 +49,7 @@ def getMoveDirection(move):
 # Determina si se esta moviendo una caja
 def isPushingBox(move):
     r = move & 4
-    return r
+    return r == 4
 
 def getGoalSpots(move):
     r = move & 56

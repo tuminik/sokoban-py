@@ -2,19 +2,6 @@
 
 from constantes import *
 
-def printTable(tab, label):
-    text = []
-    text.append("-----------")
-    text.append(label)
-    text.append("\n")
-    for i in tab:
-        text.append("".join(i))
-        text.append("\n")
-    text.append("-----------")
-    text.append(label)
-    text.append("\n")
-    return text
-
 def printDirection(move):
     direction = getMoveDirection(move)
     if direction == MOVE_UP:

@@ -26,6 +26,7 @@ class SokobanState:
     
     # Variable de depuracion
     steps = 0
+    pushes = 0
     h = -1
     
     ###########################################################################
@@ -60,6 +61,7 @@ class SokobanState:
         
         self.boxesX, self.boxesY = ListBoxes(self)
         self.steps = 0
+        self.pushes = 0
     
     # Crea una copia del estado actual
     def clone(self):
@@ -69,6 +71,7 @@ class SokobanState:
         newState.matrixX = self.matrixX
         newState.matrixY = self.matrixY
         newState.steps = self.steps
+        newState.pushes = self.pushes
         return newState
     
     ###################################
@@ -186,6 +189,8 @@ class SokobanState:
             
             self.boxesX, self.boxesY = ListBoxes(self)
             self.steps += 1
+            if isPushingBox(move):
+                self.pushes += 1
         except Exception as ex:
             if direction == MOVE_UP:
                 errorMsg = "Error al mover al jugador hacia arriba[" + str(move) + "]"
@@ -391,13 +396,17 @@ class SokobanState:
             h = h ^ hash(boxY)
         return h
     
+    ###########################################
+    # Funciones auxiliares de depuracion
+    ###########################################
     def printTable(self):
+        print "Steps: ", self.steps, " Pushes: ", self.pushes
         for i in self.matrix:
             print "".join(i)
     
     def printTableDebug(self):
         self.h = SokobanHeuristic(self)
-        print "Steps:" , self.steps , " Heuristic:" , self.h
+        print "Steps:", self.steps, " Pushes: ", self.pushes, " Heuristic:", self.h
         for i in self.matrix:
             print "".join(i)
     
