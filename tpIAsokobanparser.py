@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 
-from state import sokobanState
+from state import SokobanState
 from constantes import *
 
 # Lista de caracteres permitidos dentro de un archivo
@@ -133,7 +133,7 @@ def obtenerMapa(filename, fila, columna):
     else:
         lista = verificaPriUltFila(encuadrarLista(lista, columna), fila)
     #try
-    estado = sokobanState(lista)
+    estado = SokobanState(lista)
     estado.matrixX = fila
     estado.matrixY = columna
     estado.playerX, estado.playerY = findPlayer(lista, fila, columna)

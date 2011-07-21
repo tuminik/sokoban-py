@@ -3,8 +3,9 @@
 import copy
 from constantes import *
 from debug import *
+from heuristic import SokobanHeuristic
 
-class sokobanState:
+class SokobanState:
     
     ###########################################################################
     # Declaracion de variables
@@ -25,6 +26,7 @@ class sokobanState:
     
     # Variable de depuracion
     steps = 0
+    h = -1
     
     ###########################################################################
     # Constructor de la clase
@@ -61,7 +63,7 @@ class sokobanState:
     
     # Crea una copia del estado actual
     def clone(self):
-        newState = sokobanState(self.matrix)
+        newState = SokobanState(self.matrix)
         newState.playerX = self.playerX
         newState.playerY = self.playerY
         newState.matrixX = self.matrixX
@@ -358,7 +360,7 @@ class sokobanState:
         if other is self:
             #si tienen la misma posicion de memoria
             return True
-        if isinstance(other, sokobanState):
+        if isinstance(other, SokobanState):
             if self.playerX != other.playerX or self.playerY != other.playerY:
                 #si el jugador no esta en el mismo lugar
                 return False
@@ -394,7 +396,8 @@ class sokobanState:
             print "".join(i)
     
     def printTableDebug(self):
-        print "Steps:" , self.steps
+        self.h = SokobanHeuristic(self)
+        print "Steps:" , self.steps , " Heuristic:" , self.h
         for i in self.matrix:
             print "".join(i)
     
