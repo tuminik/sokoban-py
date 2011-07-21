@@ -20,7 +20,6 @@ printTableFather=False
 import time
 from sokoban import generateGoalState
 from sokoban import SokobanProblem
-from sokoban import printTable
 MONOSPACE_FONT_SIZE     =  10
 
 
@@ -58,6 +57,7 @@ def printText(text, eTime ,cont, textArea):
     textArea.insert(tkinter.END,text, "normal")
     textArea.insert(tkinter.END,eTime, "normal")
     textArea.insert(tkinter.END,"\nPaso nro:" + str(cont), "normal")
+    textArea.insert(tkinter.END,"\nCantidad de Pasos:" + str(len(tables.tabs)), "normal")
     textArea.configure(state=tkinter.DISABLED)
 
 
@@ -151,12 +151,9 @@ def main():
             
             i = len(states) - 1
             while i >= 0:
-                printTable(states[i].matrix, "")
                 tables.tabs.append(states[i].matrix)
-                print
                 i -= 1
             tables.excTime= 'Tiempo:', timediff,'segundos'
-            print 'Tiempo:', timediff,'segundos'
 
         else:
             print "No se pudo encontrar la solucion al problema"
