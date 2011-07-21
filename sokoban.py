@@ -32,14 +32,13 @@ def main():
         sokoban = SokobanProblem(initial, goal) 
         
         x1= time.strftime('%S')
-        
         search = astar_search(sokoban)
+        x2= time.strftime('%S')
+        timediff = int(x2) - int(x1)
+            
         
         if search:
             pathS = search.path()
-            
-            x2= time.strftime('%S')
-            timediff = int(x2) - int(x1)
             
             #Genera la secuencia de estados
             path = [node.state for node in pathS]
@@ -53,10 +52,10 @@ def main():
                 states[i].printTable()
                 print
                 i -= 1
-                
-            print 'Tiempo:', timediff,'segundos'
         else:
             print "No se pudo encontrar la solucion al problema"
+        
+        print 'Tiempo:', timediff,'segundos'
         print "Nodos expandidos:", sokoban.expanded
     else:
         if len(sys.argv)<2:
