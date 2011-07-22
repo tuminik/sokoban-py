@@ -173,8 +173,10 @@ def main():
             initial = obtenerMapa(sys.argv[1], fila, columna)
             
         goal = generateGoalState(initial) #encontrar el estado final
-        sokoban = SokobanProblem(initial, goal) 
+        sokoban = SokobanProblem(initial, goal)
+        x1= time.strftime('%S')
         search = astar_search(sokoban)
+        x2= time.strftime('%S')
         tables.filas = initial.matrixX
         tables.columnas = initial.matrixY
 
@@ -195,9 +197,9 @@ def main():
             button.grid(row=i//tables.columnas, column=i%tables.columnas, sticky="N"+"E"+"W"+"S")
             
         if search:
-            x1= time.strftime('%S')
+            
             pathS = search.path()
-            x2= time.strftime('%S')
+
             timediff = int(x2) - int(x1)
             
             #Genera la secuencia de estados
