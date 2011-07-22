@@ -34,10 +34,10 @@ def main():
         goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal) 
         
-        x1= time.strftime('%S')
+        x1= time.time()
         search = astar_search(sokoban)
-        x2= time.strftime('%S')
-        timediff = int(x2) - int(x1)
+        x2= time.time()
+        timediff = x2 - x1
             
         
         if search:
@@ -58,7 +58,7 @@ def main():
         else:
             print "No se pudo encontrar la solucion al problema"
         
-        print 'Tiempo:', timediff,'segundos'
+        print 'Tiempo:', round(timediff,4),'segundos'
         print "Nodos expandidos:", sokoban.expanded
     else:
         if len(sys.argv) < 2:

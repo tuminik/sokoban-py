@@ -174,9 +174,9 @@ def main():
             
         goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal)
-        x1= time.strftime('%S')
+        x1= time.time()
         search = astar_search(sokoban)
-        x2= time.strftime('%S')
+        x2= time.time()
         tables.filas = initial.matrixX
         tables.columnas = initial.matrixY
 
@@ -200,7 +200,7 @@ def main():
             
             pathS = search.path()
 
-            timediff = int(x2) - int(x1)
+            timediff = x2 - x1
             
             #Genera la secuencia de estados
             path = [node.state for node in pathS]
@@ -213,7 +213,7 @@ def main():
             while i >= 0:
                 tables.tabs.append(states[i].matrix)
                 i -= 1
-            tables.excTime= 'Tiempo:', timediff,'segundos'
+            tables.excTime= 'Tiempo:', round(timediff,4),'segundos'
             tables.expand = sokoban.expanded
 
         else:
