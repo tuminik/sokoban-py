@@ -12,7 +12,8 @@ caracteres = [CHAR_WALL,
               CHAR_PLAYER_S, 
               CHAR_BOX, 
               CHAR_BOX_S, 
-              '\n']
+              '\n',
+			  '\t']
 
 def imprimir(lista):
     for i in range(len(lista)):
@@ -91,6 +92,7 @@ def obtenerIndice(linea, columna):
     and obtenerIndiceLinea(linea, columna, CHAR_BOX) < obtenerIndiceLinea(linea, columna, CHAR_WALL) \
     and obtenerIndiceLinea(linea, columna, CHAR_BOX) < obtenerIndiceLinea(linea, columna, CHAR_BOX_S):
         return obtenerIndiceLinea(linea, columna, CHAR_BOX)
+    return len(linea)
     
 def rellenarEspaciosBlancos(columna, linea):
     linea2 = []
