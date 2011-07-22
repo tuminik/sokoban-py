@@ -55,7 +55,7 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
 
         if sys.argv[1]=="-v":
             state.printTableDebug()
-            print "Nodos a expandir: ", self.toexpand
+            #print "Nodos a expandir: ", self.toexpand
 
         if not listMoves:                               #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
             return []                                   #retorna lista vacia la funcion sucesor
@@ -74,7 +74,7 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
                     newState = False
             
             if sys.argv[1]=="-v":
-                print "Nodos a expandir: ", self.toexpand
+                #print "Nodos a expandir: ", self.toexpand
                 raw_input()
             
             lista = []
@@ -149,7 +149,7 @@ def generateMove(state, listMoves, row, col):
 ###############################################################################
 def generatePushes(state, push):
     listPushes = findReachableBoxes(state, push)
-    print "Cajas encontradas:" + str(len(listPushes))
+    #print "Cajas encontradas:" + str(len(listPushes))
     return listPushes
         
 ###############################################################################

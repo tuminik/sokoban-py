@@ -508,9 +508,11 @@ def countSteps(state, endRow, endCol):
     
     if distance(startRow, startCol, endRow, endCol) > 1:
         table = copy.deepcopy(state.matrix)
-    
+        
         here = table[startRow][startCol]
         there = table[endRow][endCol]
+        
+        table[endRow][endCol] = 'X'
         posQueue = FIFOQueue()
         if here == CHAR_PLAYER:
             table[startRow][startCol] = CHAR_SPACE
@@ -525,10 +527,12 @@ def countSteps(state, endRow, endCol):
         posQueue = countStepsRec(table, posQueue, startRow, startCol, endRow, endCol, 0)
     
         while len(posQueue) > 0:
+            #printTable(table, str(len(posQueue)))
+
             currentRow, currentCol, c = posQueue.pop()
-        
+            
             #si llegamos a la posicion final
-            if currentRow == endRow and currentCol == endCol:
+            if table[currentRow][currentCol] == 'X':
                 #retornar la cantidad de pasos dados
                 return c
         
@@ -552,19 +556,23 @@ def countStepsRec(table, posQueue, currentRow, currentCol, endRow, endCol, steps
         return posQueue
     
     #verifico lo que hay alrededor
-    up = table[currentRow][currentCol - 1]
-    down = table[currentRow][currentCol + 1]
-    left = table[currentRow - 1][currentCol]
-    right = table[currentRow + 1][currentCol]
+    up = table[currentRow - 1][currentCol]
+    down = table[currentRow + 1][currentCol]
+    left = table[currentRow][currentCol - 1]
+    right = table[currentRow][currentCol + 1]
     
-    #si se puede avanzar, poner las nuevas posiciones en la cola
-    if up == CHAR_SPACE or up == CHAR_SPACE_S:
-        posQueue.append((currentRow, currentCol - 1, steps + 1))
-    if down == CHAR_SPACE or down == CHAR_SPACE_S:
-        posQueue.append((currentRow, currentCol + 1, steps + 1))
-    if left == CHAR_SPACE or left == CHAR_SPACE_S:
-        posQueue.append((currentRow - 1, currentCol, steps + 1))
-    if right == CHAR_SPACE or right == CHAR_SPACE_S:
-        posQueue.append((currentRow + 1, currentCol, steps + 1))
+    if up == 'X' or down == 'X' or left == 'X' or right == 'X':
+        posQueue = FIFOQueue()
+        posQueue.append((endRow, endCol, steps + 1))
+    else:
+        #si se puede avanzar, poner las nuevas posiciones en la cola
+        if up == CHAR_SPACE or up == CHAR_SPACE_S:
+            posQueue.append((currentRow - 1, currentCol, steps + 1))
+        if down == CHAR_SPACE or down == CHAR_SPACE_S:
+            posQueue.append((currentRow + 1, currentCol, steps + 1))
+        if left == CHAR_SPACE or left == CHAR_SPACE_S:
+            posQueue.append((currentRow, currentCol - 1, steps + 1))
+        if right == CHAR_SPACE or right == CHAR_SPACE_S:
+            posQueue.append((currentRow, currentCol + 1, steps + 1))
     
     return posQueue
