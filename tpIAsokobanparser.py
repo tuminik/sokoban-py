@@ -13,7 +13,7 @@ caracteres = [CHAR_WALL,
               CHAR_BOX, 
               CHAR_BOX_S, 
               '\n',
-			  '\t']
+              '\t']
 
 def imprimir(lista):
     for i in range(len(lista)):

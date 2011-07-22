@@ -90,3 +90,20 @@ def getDir(movement):
 def distance(row1, col1, row2, col2):
     return abs(row1 - row2) + abs(col1 - col2)
 
+def Debug():
+    for arg in sys.argv:
+        if arg == "-v":
+            return True
+    return False
+
+def SuperMove():
+    for arg in sys.argv:
+        if arg == "-s":
+            return True
+    return False
+
+def Reverse():
+    for arg in sys.argv:
+        if arg == "-r":
+            return True
+    return False

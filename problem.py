@@ -53,7 +53,7 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
         self.toexpand -= 1
         self.expanded += 1
 
-        if sys.argv[1]=="-v":
+        if Debug():
             state.printTableDebug()
             #print "Nodos a expandir: ", self.toexpand
 
@@ -73,8 +73,7 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
                     print ex
                     newState = False
             
-            if sys.argv[1]=="-v":
-                #print "Nodos a expandir: ", self.toexpand
+            if Debug():
                 raw_input()
             
             lista = []
@@ -89,7 +88,7 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
         return SokobanHeuristic(node.state)
 
     def path_cost(self, c, state1, action, state2):
-        return countSteps(state1, state2.playerRow, state2.playerCol) + 1
+        return c + countSteps(state1, state2.playerRow, state2.playerCol) + 1
         
 ###############################################################################
 # Generacion de movimientos para un solo paso
@@ -108,13 +107,13 @@ def generateMove(state, listMoves, row, col):
         pos2 = state.getItemR(2 * row, 2 * col)   # Determino lo que hay a 2 pasos
     
         if row == 1 and col == 0:
-            movement = MOVE_RIGHT
-        elif row == -1 and col == 0:
-            movement = MOVE_LEFT
-        elif row == 0 and col == 1:
             movement = MOVE_DOWN
-        elif row == 0 and col == -1:
+        elif row == -1 and col == 0:
             movement = MOVE_UP
+        elif row == 0 and col == 1:
+            movement = MOVE_RIGHT
+        elif row == 0 and col == -1:
+            movement = MOVE_LEFT
         else:
             return listMoves
         
@@ -184,7 +183,7 @@ def findReachableBoxes(state, push):
     startRow, startCol = state.playerRow, state.playerCol
     table = copy.deepcopy(state.matrix)
     
-    if sys.argv[1] == "-v":
+    if Debug():
         printTable(table, "")
     
     here = table[startRow][startCol]
@@ -196,7 +195,7 @@ def findReachableBoxes(state, push):
     boxes = []
     boxes = testReachableBoxes(boxes, table, startRow, startCol, push)
     
-    if sys.argv[1] == "-v":
+    if Debug():
         printTable(table, "")
     
     return boxes

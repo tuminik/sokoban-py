@@ -17,6 +17,7 @@ from constantes import *
 
 from heuristic import SokobanHeuristic
 from state import SokobanState
+from state import generateStates
 from problem import SokobanProblem
 from problem import generateGoalState
 
@@ -26,7 +27,7 @@ def main():
     columna = 0
     fila = 0
     if len(sys.argv)==2 or len(sys.argv)==3:
-        if sys.argv[1] == "-v":
+        if Debug():
             initial = obtenerMapa(sys.argv[2], fila, columna)
         else:
             initial = obtenerMapa(sys.argv[1], fila, columna)
@@ -34,11 +35,14 @@ def main():
         goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal) 
         
+        #Mide el tiempo antes de iniciar la busqueda
         x1= time.time()
+        
         search = astar_search(sokoban)
+        
+        #Mide el tiempo al finalizar la busqueda
         x2= time.time()
-        timediff = x2 - x1
-            
+        timediff = x2 - x1 #Saca la diferencia de tiempo
         
         if search:
             pathS = search.path()
@@ -48,8 +52,17 @@ def main():
             states = []
             
             for state in path:
+                if len(states) > 0:
+                    #Verifica si hay mas de un paso entre dos estados
+                    prev = states[len(states) - 1]
+                    if distance(prev.playerRow, prev.playerCol, state.playerRow, state.playerCol) > 1:
+                        #Genera los estados intermedios
+                        states = generateStates(states, prev, state)
+                
+                #Agrega el nuevo estado a la lista
                 states.append(state)
             
+            #Saca la lista de estados, revirtiendo el orden
             i = len(states) - 1
             while i >= 0:
                 states[i].printTable()

@@ -31,6 +31,7 @@ class SokobanState:
     pushes = 0
     h = -1
     
+    
     playerCount = 0
     boxCount = 0
     endBoxCount = 0
@@ -87,7 +88,6 @@ class SokobanState:
     ###################################
     # Validaciones para movimiento
     ###################################
-    
     def canMove(self, move):
         direction = getMoveDirection(move)
         if direction == MOVE_UP:
@@ -125,21 +125,21 @@ class SokobanState:
             return False
         
         if direction == MOVE_UP:
-            pos2 = self.getItem(row, col - 1) #arriba
-            pos3 = self.getItem(row - 1, col) #izquierda
-            pos4 = self.getItem(row + 1, col) #derecha
+            pos2 = self.getItem(row - 1, col) #arriba
+            pos3 = self.getItem(row, col - 1) #izquierda
+            pos4 = self.getItem(row, col + 1) #derecha
         elif direction == MOVE_DOWN:
-            pos2 = self.getItem(row, col + 1) #abajo
-            pos3 = self.getItem(row - 1, col) #izquierda
-            pos4 = self.getItem(row + 1, col) #derecha
+            pos2 = self.getItem(row + 1, col) #abajo
+            pos3 = self.getItem(row, col - 1) #izquierda
+            pos4 = self.getItem(row, col + 1) #derecha
         elif direction == MOVE_LEFT:
-            pos2 = self.getItem(row - 1, col) #izquierda
-            pos3 = self.getItem(row, col + 1) #abajo
-            pos4 = self.getItem(row, col - 1) #arriba
+            pos2 = self.getItem(row, col - 1) #izquierda
+            pos3 = self.getItem(row + 1, col) #abajo
+            pos4 = self.getItem(row - 1, col) #arriba
         elif direction == MOVE_RIGHT:
-            pos2 = self.getItem(row + 1, col) #derecha
-            pos3 = self.getItem(row, col + 1) #abajo
-            pos4 = self.getItem(row, col - 1) #arriba
+            pos2 = self.getItem(row, col + 1) #derecha
+            pos3 = self.getItem(row + 1, col) #abajo
+            pos4 = self.getItem(row - 1, col) #arriba
         
         if pos2 == CHAR_WALL:
             if pos3 == CHAR_WALL or pos4 == CHAR_WALL:
@@ -156,13 +156,13 @@ class SokobanState:
     def canMoveReverse(self, move, pull):
         direction = getMoveDirection(move)
         if direction == MOVE_UP:
-            return self.canMoveReverseDir(0, -1, pull)
-        elif direction == MOVE_DOWN:
-            return self.canMoveReverseDir(0, 1, pull)
-        elif direction == MOVE_LEFT:
             return self.canMoveReverseDir(-1, 0, pull)
-        elif direction == MOVE_RIGHT:
+        elif direction == MOVE_DOWN:
             return self.canMoveReverseDir(1, 0, pull)
+        elif direction == MOVE_LEFT:
+            return self.canMoveReverseDir(0, -1, pull)
+        elif direction == MOVE_RIGHT:
+            return self.canMoveReverseDir(0, 1, pull)
         else:
             return False        
     
@@ -499,6 +499,10 @@ def ListBoxes(state):
     
     return list
 
+###############################################################################
+# Funcion para generar la cuenta de pasos para que el jugador se desplace
+# entre dos posiciones
+###############################################################################
 def countSteps(state, endRow, endCol):
     startRow = state.playerRow
     startCol = state.playerCol
@@ -512,6 +516,7 @@ def countSteps(state, endRow, endCol):
         here = table[startRow][startCol]
         there = table[endRow][endCol]
         
+        #Marca la meta
         table[endRow][endCol] = 'X'
         posQueue = FIFOQueue()
         if here == CHAR_PLAYER:
@@ -576,3 +581,12 @@ def countStepsRec(table, posQueue, currentRow, currentCol, endRow, endCol, steps
             posQueue.append((currentRow, currentCol + 1, steps + 1))
     
     return posQueue
+
+###############################################################################
+# Funcion que genera los estados intermedios entre dos pasos
+###############################################################################
+def generateStates(states, prev, next):
+    a = 0
+    
+    return states
+
