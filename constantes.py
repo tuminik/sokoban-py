@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import sys
+
 ###############################################################################
 #                        Definicion de constantes                             #
 ###############################################################################
@@ -107,3 +109,9 @@ def Reverse():
         if arg == "-r":
             return True
     return False
+
+def Filename():
+    for arg in sys.argv:
+        if arg[0] != '-':
+            return arg
+    raise Exception("No se ha especificado archivo de entrada")
