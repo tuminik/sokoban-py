@@ -26,7 +26,10 @@ def main():
     columna = 0
     fila = 0
     if len(sys.argv)==2 or len(sys.argv)==3:
-        initial = obtenerMapa(sys.argv[1], fila, columna)
+        if sys.argv[1] == "-v":
+            initial = obtenerMapa(sys.argv[2], fila, columna)
+        else:
+            initial = obtenerMapa(sys.argv[1], fila, columna)
         
         goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal) 

@@ -26,3 +26,6 @@ def printRelCoord(x, y):
         return "[RIGHT]"
     else:
         return "[LEFT]"
+
+def printCoords(x, y):
+    return "[" + str(x) + "," + str(y) + "]"

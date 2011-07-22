@@ -37,6 +37,8 @@ CHAR_PLAYER_S='+'
 CHAR_BOX='$'
 CHAR_BOX_S='*'
 
+NEWLINE=chr(10)
+
 ###############################################################################
 #        Definicion de funciones para determinar el tipo de movimiento        #
 ###############################################################################
@@ -55,3 +57,14 @@ def getGoalSpots(move):
     r = move & 56
     return r
 
+def getMoveFromRel(x, y):
+    if x == 0 and y == -1:
+        return MOVE_UP
+    elif x == 0 and y == 1:
+        return MOVE_DOWN
+    elif x == -1 and y == 0:
+        return MOVE_LEFT
+    elif x == 1 and y == 0:
+        return MOVE_RIGHT
+    else:
+        raise Exception("Movimiento relativo invalido [" + str(x) + "," + str(y) + "]")

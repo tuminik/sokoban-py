@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import copy
 
 from ai import Problem
 
@@ -39,12 +40,12 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
         else:
             return False
     
-    
     def successor(self, state):                         #funcion sucesora
         listMoves=[]                                    #lista para posibles movimientos
         listStates=[]                                   #lista para posibles estados de la tabla
         x, y = state.playerX, state.playerY             #encontrar donde esta el jugador
         listMoves = generateMoves(state, listMoves)     #puede moverse????  
+        #listMoves = generatePushes(state, True)
         self.expanded += 1
         if not listMoves:                               #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
             return []                                   #retorna lista vacia la funcion sucesor
@@ -54,18 +55,28 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
             for movement in listMoves:
                 newState = state.clone()                #generar nuevo estado
                 newState.movePlayer(movement)           #mueve el jugador    
+                #newState.superMovePlayer(movement)
                 listStates.append(newState)             #agregar estado a la lista
             
             if sys.argv[1]=="-v":
                 #printTable(state.matrix, "padre")
                 state.printTableDebug()
                 raw_input()
-            return [(moveA, wichMove(moveA, listStates, listMoves)) for moveA in listMoves] #arma una lista de pares por ejemplo [(A,B),(C,D)]
+            
+            lista = []
+            for i in range(len(listMoves)):
+                #arma una lista de pares por ejemplo [(A,B),(C,D)]
+                lista.append((listMoves[i-1], listStates[i-1]))
+            return lista
+            
             #en este caso un par de movimiento y la tabla que se movio
     
     def h(self, node):
         return SokobanHeuristic(node.state)
 
+###############################################################################
+# Generacion de movimientos para un solo paso
+###############################################################################
 def generateMoves(state, listMoves):
     listMoves = generateMove(state, listMoves, 1, 0)
     listMoves = generateMove(state, listMoves, 0, 1)
@@ -78,7 +89,7 @@ def generateMove(state, listMoves, x, y):
         pos0 = state.getItemR(0, 0)           # Determino lo que hay a 0 pasos
         pos1 = state.getItemR(x, y)           # Determino lo que hay a 1 paso
         pos2 = state.getItemR(2 * x, 2 * y)   # Determino lo que hay a 2 pasos
-   
+    
         if x == 1 and y == 0:
             movement = MOVE_RIGHT
         elif x == -1 and y == 0:
@@ -115,14 +126,18 @@ def generateMove(state, listMoves, x, y):
         return listMoves
     except:
         return listMoves
-        
-def wichMove(moveA, listStates, listMoves):
-    try:
-        return listStates[listMoves.index(moveA)]
-    except:
-        return []
 
+###############################################################################
+# Generacion de movimientos, donde solo importa empujar las cajas
+###############################################################################
+def generatePushes(state, push):
+    listPushes = findReachableBoxes(state, push)
+    print "Cajas encontradas:" + str(len(listPushes))
+    return listPushes
+        
+###############################################################################
 # Genera un estado donde todas las cajas estan en su posicion
+###############################################################################
 def generateGoalState(state):
     goal = state.clone()
     table = goal.matrix
@@ -144,3 +159,62 @@ def generateGoalState(state):
         x += 1
     return goal
 
+###############################################################################
+# Busqueda de cajas que pueden ser alcanzadas para empujar
+# desde la posicion actual
+###############################################################################
+def findReachableBoxes(state, push):
+    startX, startY = state.playerX, state.playerY
+    table = copy.deepcopy(state.matrix)
+    
+    if table[startX][startY] == CHAR_PLAYER:
+        table[startX][startY] = CHAR_SPACE
+    elif table[startX][startY] == CHAR_PLAYER_S:
+        table[startX][startY] = CHAR_SPACE_S
+    
+    boxes = []
+    boxes = testReachableBoxes(boxes, table, startX, startY, push)
+    
+    return boxes
+
+def testReachableBoxes(boxes, table, x, y, push):
+    here = table[x][y]
+    
+    #marco este lugar como visitado
+    if here == CHAR_SPACE:
+        table[x][y] = CHAR_PLAYER
+    elif here == CHAR_SPACE_S:
+        table[x][y] = CHAR_PLAYER_S
+    
+    #prueba si hay cajas a mover en cada direccion
+    boxes = testReachableBoxesDir(boxes, table, x, y, 0, -1, push) #UP
+    boxes = testReachableBoxesDir(boxes, table, x, y, 0, 1, push)  #DOWN
+    boxes = testReachableBoxesDir(boxes, table, x, y, -1, 0, push) #LEFT
+    boxes = testReachableBoxesDir(boxes, table, x, y, 1, 0, push)  #RIGHT
+    
+    return boxes
+
+def testReachableBoxesDir(boxes, table, x, y, relX, relY, push):
+    pos1 = table[x + relX][y + relY]
+    move = 0
+    
+    if pos1 == CHAR_BOX or pos1 == CHAR_BOX_S:
+        if push: #empujar
+            pos2 = table[x + 2 * relX][y + 2 * relY]
+        else: #estirar
+            pos2 = table[x - relX][y - relY]
+        
+        if pos2 == CHAR_SPACE or pos2 == CHAR_SPACE_S \
+        or pos2 == CHAR_PLAYER or pos2 == CHAR_PLAYER_S:
+            move = PUSH_BOX
+            if push: #empujar
+                move = move | getMoveFromRel(relX, relY)
+                boxes.append((x, y, move))
+            else: #estirar
+                move = move | getMoveFromRel(-relX, -relY)
+                boxes.append((x - relX, y - relY, move))
+    elif pos1 == CHAR_SPACE or pos1 == CHAR_SPACE_S:
+        #hace la recursion de la busqueda
+        boxes = testReachableBoxes(boxes, table, x + relX, y + relY, push)
+    
+    return boxes
