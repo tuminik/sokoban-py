@@ -28,6 +28,9 @@ class tables():
     cont=0
     excTime=""
     expand=0
+    buttons=[]
+    filas=0
+    columnas=0
     
 
 def tableToStr(tableS):
@@ -72,6 +75,20 @@ def changeTableNext(textA, tables):
         tables.cont=tables.cont + 1
         text = tableToStr(tables.tabs[tables.cont])
         printText(text, tables.excTime,tables.cont ,  textA)
+        x=0
+        for i in tables.tabs[tables.cont]:
+            for j in i:
+                show=blank
+                if j=='#':
+                    show=brick
+                if j=='@' or j=='+':
+                    show=player
+                if j=='.':
+                    show=goalImage
+                if j=='$' or j=='*':
+                    show=box
+                tables.buttons[x].configure(image=show)
+                x+=1
         
     return
 
@@ -82,7 +99,21 @@ def changeTablePrev(textA, tables):
     else:
         tables.cont=tables.cont-1
         text = tableToStr(tables.tabs[tables.cont])
-        printText(text, tables.excTime ,tables.cont,  textA)        
+        printText(text, tables.excTime ,tables.cont,  textA)
+        x=0
+        for i in tables.tabs[tables.cont]:
+            for j in i:
+                show=blank
+                if j=='#':
+                    show=brick
+                if j=='@' or j=='+':
+                    show=player
+                if j=='.':
+                    show=goalImage
+                if j=='$' or j=='*':
+                    show=box              
+                tables.buttons[x].configure(image=show)
+                x+=1
     return
 
 def tableNext(textA,  table):
@@ -109,7 +140,7 @@ btnframe = tkinter.Frame(root)
 btnframe.pack(side=TOP, expand=YES, fill=BOTH)
 
 character_width = int((root_width * 0.6) / MONOSPACE_FONT_SIZE)
-textArea = tkinter.Text(root,height=25,width=character_width, padx="1m", pady="1m")
+textArea = tkinter.Text(root,height=10,width=character_width, padx="1m", pady="1m")
 textArea.pack(side=tkinter.LEFT, fill=BOTH, expand=YES)
 
 nextbtn = tkinter.Button(root, command=tableNext(textArea, tables), text="NEXT STEP")
@@ -118,6 +149,16 @@ nextbtn.pack(side=BOTTOM, expand=NO, fill=X)
 prevbtn = tkinter.Button(root, command=tablePrev(textArea, tables), text="PREV STEP")
 prevbtn.pack(side=BOTTOM, expand=NO, fill=X)
 
+soko = tkinter.PhotoImage(file="images/sokoban.gif")
+brick = tkinter.PhotoImage(file="images/brick.gif")
+player = tkinter.PhotoImage(file="images/player.gif")
+blank = tkinter.PhotoImage(file="images/blank.gif")
+box = tkinter.PhotoImage(file="images/box.gif")
+goalImage = tkinter.PhotoImage(file="images/goal.gif")
+label = tkinter.Label(image=soko)
+
+
+label.pack(side=BOTTOM, expand=NO, fill=X)
 
 
 
@@ -134,7 +175,25 @@ def main():
         goal = generateGoalState(initial) #encontrar el estado final
         sokoban = SokobanProblem(initial, goal) 
         search = astar_search(sokoban)
-        
+        tables.filas = initial.matrixX
+        tables.columnas = initial.matrixY
+
+        for i in initial.matrix:
+            for j in i:
+                show=blank
+                if j=='#':
+                    show=brick
+                if j=='@' or j=='+':
+                    show=player
+                if j=='.':
+                    show=goalImage
+                if j=='$' or j=='*':
+                    show=box              
+                tables.buttons.append(tkinter.Label(btnframe, image=show)) 
+    
+        for i, button in enumerate(tables.buttons):
+            button.grid(row=i//tables.columnas, column=i%tables.columnas, sticky="N"+"E"+"W"+"S")
+            
         if search:
             x1= time.strftime('%S')
             pathS = search.path()
