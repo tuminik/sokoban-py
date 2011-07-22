@@ -2,6 +2,14 @@
 
 from constantes import *
 
+def printTable(table, label):
+    row = 0
+    col = 0
+    print "-----------", label
+    for row in table:
+        print "".join(row)
+    print "-----------", label
+
 def printDirection(move):
     direction = getMoveDirection(move)
     if direction == MOVE_UP:
@@ -13,19 +21,19 @@ def printDirection(move):
     else:
         return "[RIGHT]"
 
-def printRelCoord(x, y):
-    if (x == 0 and y == 0) or (x != 0 and y != 0) or (x > 1 or x < -1) or (y > 1 or y < -1):
+def printRelCoord(row, col):
+    if (row == 0 and col == 0) or (row != 0 and col != 0) or (row > 1 or row < -1) or (col > 1 or col < -1):
         return "[INVALID MOVE]"
     
-    if x == 0:
-        if y > 0:
-            return "[DOWN]"
+    if row == 0:
+        if col > 0:
+            return "[RIGHT]"
         else:
-            return "[UP]"
-    elif x > 0:
-        return "[RIGHT]"
+            return "[LEFT]"
+    elif row > 0:
+        return "[DOWN]"
     else:
-        return "[LEFT]"
+        return "[UP]"
 
-def printCoords(x, y):
-    return "[" + str(x) + "," + str(y) + "]"
+def printCoords(row, col):
+    return "[" + str(row) + "," + str(col) + "]"

@@ -138,7 +138,7 @@ def obtenerMapa(filename, fila, columna):
     estado = SokobanState(lista)
     estado.matrixX = fila
     estado.matrixY = columna
-    estado.playerX, estado.playerY = findPlayer(lista, fila, columna)
+    estado.playerRow, estado.playerCol = findPlayer(lista, fila, columna)
     return estado
     #except:   
     #    return lista

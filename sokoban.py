@@ -61,9 +61,9 @@ def main():
         print 'Tiempo:', timediff,'segundos'
         print "Nodos expandidos:", sokoban.expanded
     else:
-        if len(sys.argv)<2:
+        if len(sys.argv) < 2:
             print "Debe recibir el nombre del archivo..."
-        if len(sys.argv)>3:
+        if len(sys.argv) > 3:
             print "Demasiados arguementos..."
 
 if __name__ == "__main__":

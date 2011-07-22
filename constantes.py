@@ -57,14 +57,36 @@ def getGoalSpots(move):
     r = move & 56
     return r
 
-def getMoveFromRel(x, y):
-    if x == 0 and y == -1:
+def getMove(row, col):
+    if col == 0 and row == -1:
         return MOVE_UP
-    elif x == 0 and y == 1:
+    elif col == 0 and row == 1:
         return MOVE_DOWN
-    elif x == -1 and y == 0:
+    elif col == -1 and row == 0:
         return MOVE_LEFT
-    elif x == 1 and y == 0:
+    elif col == 1 and row == 0:
         return MOVE_RIGHT
+
+def getDir(movement):
+    move = getMoveDirection(movement)
+    if move == MOVE_UP:
+        row = -1
+        col = 0
+    elif move == MOVE_DOWN:
+        row = 1
+        col = 0
+    elif move == MOVE_LEFT:
+        row = 0
+        col = -1
+    elif move == MOVE_RIGHT:
+        row = 0
+        col = 1
     else:
-        raise Exception("Movimiento relativo invalido [" + str(x) + "," + str(y) + "]")
+        errorMsg = "GetDir: Movimiento invalido."
+        raise Exception(errorMsg)
+
+    return row, col
+
+def distance(row1, col1, row2, col2):
+    return abs(row1 - row2) + abs(col1 - col2)
+

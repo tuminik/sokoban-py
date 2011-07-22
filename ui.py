@@ -75,7 +75,7 @@ def changeTableNext(textA, tables):
         tables.cont=tables.cont + 1
         text = tableToStr(tables.tabs[tables.cont])
         printText(text, tables.excTime,tables.cont ,  textA)
-        x=0
+        row=0
         for i in tables.tabs[tables.cont]:
             for j in i:
                 show=blank
@@ -87,8 +87,8 @@ def changeTableNext(textA, tables):
                     show=goalImage
                 if j=='$' or j=='*':
                     show=box
-                tables.buttons[x].configure(image=show)
-                x+=1
+                tables.buttons[row].configure(image=show)
+                row+=1
         
     return
 
@@ -100,7 +100,7 @@ def changeTablePrev(textA, tables):
         tables.cont=tables.cont-1
         text = tableToStr(tables.tabs[tables.cont])
         printText(text, tables.excTime ,tables.cont,  textA)
-        x=0
+        row=0
         for i in tables.tabs[tables.cont]:
             for j in i:
                 show=blank
@@ -112,8 +112,8 @@ def changeTablePrev(textA, tables):
                     show=goalImage
                 if j=='$' or j=='*':
                     show=box              
-                tables.buttons[x].configure(image=show)
-                x+=1
+                tables.buttons[row].configure(image=show)
+                row+=1
     return
 
 def tableNext(textA,  table):
@@ -131,7 +131,7 @@ YES = True
 BOTH = "both"
 BOTTOM = "bottom"
 NO = False
-X = "x"
+X = "row"
 root = tkinter.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()

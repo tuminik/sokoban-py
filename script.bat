@@ -1,4 +1,4 @@
 @echo off
 cls
-python sokoban.py problemas\%1
+python sokoban.py problemas\problema2
 pause

@@ -6,7 +6,9 @@ import copy
 from ai import Problem
 
 from constantes import *
+from debug import *
 from heuristic import SokobanHeuristic
+from state import countSteps
 
 ###############################################################################
 #                                 Sokoban Problem                             #
@@ -15,11 +17,13 @@ from heuristic import SokobanHeuristic
 class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
     
     expanded = 0
+    toexpand = 0
     
     #recibe la tabla de juego y construye
     def _init_(self):
         self.initial=self
-        self.expanded = 0
+        self.expanded = 1
+        self.toexpand = 0
     
     def goal_test(self, state):
         boxes=0
@@ -43,10 +47,16 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
     def successor(self, state):                         #funcion sucesora
         listMoves=[]                                    #lista para posibles movimientos
         listStates=[]                                   #lista para posibles estados de la tabla
-        x, y = state.playerX, state.playerY             #encontrar donde esta el jugador
-        listMoves = generateMoves(state, listMoves)     #puede moverse????  
-        #listMoves = generatePushes(state, True)
+        row, col = state.playerRow, state.playerCol             #encontrar donde esta el jugador
+        #listMoves = generateMoves(state, listMoves)     #puede moverse????  
+        listMoves = generatePushes(state, True)
+        self.toexpand -= 1
         self.expanded += 1
+
+        if sys.argv[1]=="-v":
+            state.printTableDebug()
+            print "Nodos a expandir: ", self.toexpand
+
         if not listMoves:                               #si la lista esta vacia, no hay movimientos posibles por ende no posibles sucesores
             return []                                   #retorna lista vacia la funcion sucesor
         else:                                           #si la lista tiene algo!!
@@ -54,13 +64,17 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
             # Por cada movimiento posible
             for movement in listMoves:
                 newState = state.clone()                #generar nuevo estado
-                newState.movePlayer(movement)           #mueve el jugador    
-                #newState.superMovePlayer(movement)
-                listStates.append(newState)             #agregar estado a la lista
+                try:
+                    #newState.movePlayer(movement)           #mueve el jugador    
+                    newState.superMovePlayer(movement)
+                    listStates.append(newState)             #agregar estado a la lista
+                    self.toexpand += 1
+                except Exception as ex:
+                    print ex
+                    newState = False
             
             if sys.argv[1]=="-v":
-                #printTable(state.matrix, "padre")
-                state.printTableDebug()
+                print "Nodos a expandir: ", self.toexpand
                 raw_input()
             
             lista = []
@@ -69,11 +83,14 @@ class SokobanProblem(Problem):      #hereda la clase Problem de ai.py
                 lista.append((listMoves[i-1], listStates[i-1]))
             return lista
             
-            #en este caso un par de movimiento y la tabla que se movio
+            #en este caso un par de movimiento col la tabla que se movio
     
     def h(self, node):
         return SokobanHeuristic(node.state)
 
+    def path_cost(self, c, state1, action, state2):
+        return countSteps(state1, state2.playerRow, state2.playerCol) + 1
+        
 ###############################################################################
 # Generacion de movimientos para un solo paso
 ###############################################################################
@@ -84,19 +101,19 @@ def generateMoves(state, listMoves):
     listMoves = generateMove(state, listMoves, 0, -1)
     return listMoves
 
-def generateMove(state, listMoves, x, y):
+def generateMove(state, listMoves, row, col):
     try:
         pos0 = state.getItemR(0, 0)           # Determino lo que hay a 0 pasos
-        pos1 = state.getItemR(x, y)           # Determino lo que hay a 1 paso
-        pos2 = state.getItemR(2 * x, 2 * y)   # Determino lo que hay a 2 pasos
+        pos1 = state.getItemR(row, col)           # Determino lo que hay a 1 paso
+        pos2 = state.getItemR(2 * row, 2 * col)   # Determino lo que hay a 2 pasos
     
-        if x == 1 and y == 0:
+        if row == 1 and col == 0:
             movement = MOVE_RIGHT
-        elif x == -1 and y == 0:
+        elif row == -1 and col == 0:
             movement = MOVE_LEFT
-        elif x == 0 and y == 1:
+        elif row == 0 and col == 1:
             movement = MOVE_DOWN
-        elif x == 0 and y == -1:
+        elif row == 0 and col == -1:
             movement = MOVE_UP
         else:
             return listMoves
@@ -141,22 +158,22 @@ def generatePushes(state, push):
 def generateGoalState(state):
     goal = state.clone()
     table = goal.matrix
-    x = 0
+    row = 0
     for i in table:
-        y = 0
+        col = 0
         for j in i:
             if j == '$':
-                table[x][y] = ' '
-            y += 1
-        x += 1
-    x = 0
+                table[row][col] = ' '
+            col += 1
+        row += 1
+    row = 0
     for i in table:
-        y = 0
+        col = 0
         for j in i:
             if j == '.':
-                table[x][y] = '$'
-            y += 1
-        x += 1
+                table[row][col] = '$'
+            col += 1
+        row += 1
     return goal
 
 ###############################################################################
@@ -164,57 +181,64 @@ def generateGoalState(state):
 # desde la posicion actual
 ###############################################################################
 def findReachableBoxes(state, push):
-    startX, startY = state.playerX, state.playerY
+    startRow, startCol = state.playerRow, state.playerCol
     table = copy.deepcopy(state.matrix)
     
-    if table[startX][startY] == CHAR_PLAYER:
-        table[startX][startY] = CHAR_SPACE
-    elif table[startX][startY] == CHAR_PLAYER_S:
-        table[startX][startY] = CHAR_SPACE_S
+    if sys.argv[1] == "-v":
+        printTable(table, "")
+    
+    here = table[startRow][startCol]
+    if here == CHAR_PLAYER:
+        table[startRow][startCol] = CHAR_SPACE
+    elif here == CHAR_PLAYER_S:
+        table[startRow][startCol] = CHAR_SPACE_S
     
     boxes = []
-    boxes = testReachableBoxes(boxes, table, startX, startY, push)
+    boxes = testReachableBoxes(boxes, table, startRow, startCol, push)
+    
+    if sys.argv[1] == "-v":
+        printTable(table, "")
     
     return boxes
 
-def testReachableBoxes(boxes, table, x, y, push):
-    here = table[x][y]
+def testReachableBoxes(boxes, table, row, col, push):
+    here = table[row][col]
     
     #marco este lugar como visitado
     if here == CHAR_SPACE:
-        table[x][y] = CHAR_PLAYER
+        table[row][col] = CHAR_PLAYER
     elif here == CHAR_SPACE_S:
-        table[x][y] = CHAR_PLAYER_S
+        table[row][col] = CHAR_PLAYER_S
     
     #prueba si hay cajas a mover en cada direccion
-    boxes = testReachableBoxesDir(boxes, table, x, y, 0, -1, push) #UP
-    boxes = testReachableBoxesDir(boxes, table, x, y, 0, 1, push)  #DOWN
-    boxes = testReachableBoxesDir(boxes, table, x, y, -1, 0, push) #LEFT
-    boxes = testReachableBoxesDir(boxes, table, x, y, 1, 0, push)  #RIGHT
+    boxes = testReachableBoxesDir(boxes, table, row, col, 0, -1, push) #UP
+    boxes = testReachableBoxesDir(boxes, table, row, col, 0, 1, push)  #DOWN
+    boxes = testReachableBoxesDir(boxes, table, row, col, -1, 0, push) #LEFT
+    boxes = testReachableBoxesDir(boxes, table, row, col, 1, 0, push)  #RIGHT
     
     return boxes
 
-def testReachableBoxesDir(boxes, table, x, y, relX, relY, push):
-    pos1 = table[x + relX][y + relY]
+def testReachableBoxesDir(boxes, table, row, col, relRow, relCol, push):
+    pos1 = table[row + relRow][col + relCol]
     move = 0
     
     if pos1 == CHAR_BOX or pos1 == CHAR_BOX_S:
         if push: #empujar
-            pos2 = table[x + 2 * relX][y + 2 * relY]
+            pos2 = table[row + 2 * relRow][col + 2 * relCol]
         else: #estirar
-            pos2 = table[x - relX][y - relY]
+            pos2 = table[row - relRow][col - relCol]
         
         if pos2 == CHAR_SPACE or pos2 == CHAR_SPACE_S \
         or pos2 == CHAR_PLAYER or pos2 == CHAR_PLAYER_S:
             move = PUSH_BOX
             if push: #empujar
-                move = move | getMoveFromRel(relX, relY)
-                boxes.append((x, y, move))
+                move = move | getMove(relRow, relCol)
+                boxes.append((row, col, move))
             else: #estirar
-                move = move | getMoveFromRel(-relX, -relY)
-                boxes.append((x - relX, y - relY, move))
+                move = move | getMove(-relRow, -relCol)
+                boxes.append((row - relRow, col - relCol, move))
     elif pos1 == CHAR_SPACE or pos1 == CHAR_SPACE_S:
         #hace la recursion de la busqueda
-        boxes = testReachableBoxes(boxes, table, x + relX, y + relY, push)
+        boxes = testReachableBoxes(boxes, table, row + relRow, col + relCol, push)
     
     return boxes
