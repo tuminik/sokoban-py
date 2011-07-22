@@ -1,9 +1,8 @@
-from easygui import ccbox
-from easygui import codebox
-import Tkinter as tkinter
-import tkMessageBox as messagebox
 import sys
-from sokoban import main
+import copy
+import time
+
+from utils import infinity
 from ai import Problem
 from ai import astar_search
 from ai import iterative_deepening_search
@@ -12,15 +11,21 @@ from ai import depth_first_graph_search
 from ai import breadth_first_tree_search
 from ai import breadth_first_graph_search
 from ai import depth_limited_search
-from utils import infinity
-import sys
+
+import Tkinter as tkinter
+import tkMessageBox as messagebox
+from easygui import ccbox
+from easygui import codebox
+
 from tpIAsokobanparser import obtenerMapa
-import copy
-printTableFather=False
-import time
+from sokoban import main
 from sokoban import generateGoalState
 from sokoban import SokobanProblem
+from constantes import *
+
+printTableFather=False
 MONOSPACE_FONT_SIZE =  10
+
 
 
 class tables():
@@ -78,15 +83,7 @@ def changeTableNext(textA, tables):
         row=0
         for i in tables.tabs[tables.cont]:
             for j in i:
-                show=blank
-                if j=='#':
-                    show=brick
-                if j=='@' or j=='+':
-                    show=player
-                if j=='.':
-                    show=goalImage
-                if j=='$' or j=='*':
-                    show=box
+                show = getImage(j)
                 tables.buttons[row].configure(image=show)
                 row+=1
         
@@ -103,15 +100,7 @@ def changeTablePrev(textA, tables):
         row=0
         for i in tables.tabs[tables.cont]:
             for j in i:
-                show=blank
-                if j=='#':
-                    show=brick
-                if j=='@' or j=='+':
-                    show=player
-                if j=='.':
-                    show=goalImage
-                if j=='$' or j=='*':
-                    show=box              
+                show = getImage(j)
                 tables.buttons[row].configure(image=show)
                 row+=1
     return
@@ -154,6 +143,7 @@ brick = tkinter.PhotoImage(file="images/brick.gif")
 player = tkinter.PhotoImage(file="images/player.gif")
 blank = tkinter.PhotoImage(file="images/blank.gif")
 box = tkinter.PhotoImage(file="images/box.gif")
+box2 = tkinter.PhotoImage(file="images/box2.gif")
 goalImage = tkinter.PhotoImage(file="images/goal.gif")
 label = tkinter.Label(image=soko)
 
@@ -182,15 +172,7 @@ def main():
 
         for i in initial.matrix:
             for j in i:
-                show=blank
-                if j=='#':
-                    show=brick
-                if j=='@' or j=='+':
-                    show=player
-                if j=='.':
-                    show=goalImage
-                if j=='$' or j=='*':
-                    show=box              
+                show = getImage(j)
                 tables.buttons.append(tkinter.Label(btnframe, image=show)) 
     
         for i, button in enumerate(tables.buttons):
@@ -227,6 +209,22 @@ def main():
     text = tableToStr(tables.tabs[0])
     printText(text,tables.excTime, tables.cont,textArea)
     root.mainloop()
+
+def getImage(j):
+    if j == CHAR_WALL:
+        return brick
+    elif j == CHAR_PLAYER:
+        return player
+    elif j == CHAR_PLAYER_S:
+        return player2
+    elif j == CHAR_SPACE_S:
+        return goalImage
+    elif j == CHAR_BOX:
+        return box              
+    elif j == CHAR_BOX_S:
+        return box2
+    else:
+        return blank
 
 if __name__ == "__main__":
     main()
