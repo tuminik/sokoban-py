@@ -1,0 +1,1 @@
+Implementación de un juego de Sokoban con inteligencia artificial.
